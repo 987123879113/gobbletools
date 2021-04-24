@@ -1,20 +1,3 @@
-<style>
-    .jamma table th:first-of-type {
-        width: 45%;
-    }
-    .jamma table th:nth-of-type(2) {
-        width: 5%;
-    }
-    .jamma table th:nth-of-type(3) {
-        width: 5%;
-    }
-    .jamma table th:nth-of-type(4) {
-        width: 45%;
-    }
-</style>
-
-<div class="jamma">
-
 ## System 573 Dance Maniax JAMMA Pinout
 
 Bottom |  |  | Top
@@ -47,5 +30,3 @@ Bottom |  |  | Top
 | P2 D0 2 | d | 26 | P1 D0 2 |
 |  | e | 27 |  |
 |  | f | 28 |  |
-
-</div>
