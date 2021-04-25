@@ -734,7 +734,7 @@ def get_file_data(input_folder, fileinfo, enckey=None):
     return bytearray(data)
 
 
-def dump_data(input_folder, output_folder, candidate_result, main_card_filename=None):
+def dump_data(input_folder, output_folder, candidate_result, main_card_filename=None, dump_unreference=False):
     global hash_list
     global used_hash_list
     global unknown_hash_list
@@ -747,10 +747,8 @@ def dump_data(input_folder, output_folder, candidate_result, main_card_filename=
 
     if game_filename:
         used_regions[0] = {
-            0: {
-                'filename': game_filename,
-                'data': [0] * os.path.getsize(game_filename),
-            },
+            'filename': game_filename,
+            'data': [0] * os.path.getsize(game_filename),
         }
 
     if card_filename:
@@ -887,10 +885,10 @@ def dump_data(input_folder, output_folder, candidate_result, main_card_filename=
         # Mark region as used
         region_size = fileinfo['offset'] + fileinfo['filesize']
 
-        # if (region_size % 0x800) != 0:
-        #     region_size += 0x800 - (region_size % 0x800)
+        if (region_size % 0x800) != 0:
+            region_size += 0x800 - (region_size % 0x800)
 
-        # used_regions[fileinfo['flag_loc']]['data'][fileinfo['offset']:region_size] = [1] * (region_size - fileinfo['offset'])
+        used_regions[fileinfo['flag_loc']]['data'][fileinfo['offset']:region_size] = [1] * (region_size - fileinfo['offset'])
 
         if os.path.exists(output_filename):
             continue
@@ -922,31 +920,32 @@ def dump_data(input_folder, output_folder, candidate_result, main_card_filename=
 
     json.dump({'files': files}, open(os.path.join(output_folder, "_metadata.json"), "w"), indent=4)
 
-    # unreferenced_path = os.path.join(output_folder, "#unreferenced")
-    # for k in used_regions:
-    #     data = bytearray(open(os.path.join(input_folder, used_regions[k]['filename']), "rb").read())
+    if dump_unreference:
+        unreferenced_path = os.path.join(output_folder, "#unreferenced")
+        for k in used_regions:
+            data = bytearray(open(os.path.join(input_folder, used_regions[k]['filename']), "rb").read())
 
-    #     # Find and dump unreferenced regions with data in them
-    #     start = 0
-    #     while start < len(used_regions[k]['data']):
-    #         if used_regions[k]['data'][start] == 0:
-    #             end = start
+            # Find and dump unreferenced regions with data in them
+            start = 0
+            while start < len(used_regions[k]['data']):
+                if used_regions[k]['data'][start] == 0:
+                    end = start
 
-    #             while end < len(used_regions[k]['data']) and used_regions[k]['data'][end] == 0:
-    #                 end += 1
+                    while end < len(used_regions[k]['data']) and used_regions[k]['data'][end] == 0:
+                        end += 1
 
-    #             if len([x for x in data[start:end] if x != 0]) > 0 and len([x for x in data[start:end] if x != 0xff]) > 0:
-    #                 if not os.path.exists(unreferenced_path):
-    #                     os.makedirs(unreferenced_path)
+                    if len([x for x in data[start:end] if x != 0]) > 0 and len([x for x in data[start:end] if x != 0xff]) > 0:
+                        if not os.path.exists(unreferenced_path):
+                            os.makedirs(unreferenced_path)
 
-    #                 print("Found unreferenced data @ %08x - %08x" % (start, end))
+                        print("Found unreferenced data @ %08x - %08x" % (start, end))
 
-    #                 open(os.path.join(unreferenced_path, "%d_%08x.bin" % (k, start)), "wb").write(data[start:end])
+                        open(os.path.join(unreferenced_path, "%d_%08x.bin" % (k, start)), "wb").write(data[start:end])
 
-    #             start = end + 1
+                    start = end + 1
 
-    #         else:
-    #             start += 1
+                else:
+                    start += 1
 
 
 def main():
@@ -958,6 +957,7 @@ def main():
 
     parser.add_argument('--input', help='Input folder', default=None, required=True)
     parser.add_argument('--output', help='Output folder', default="output")
+    parser.add_argument('--dump-unreferenced', help='Dump unreferenced regions', default=False, action="store_true")
 
     args, _ = parser.parse_known_args()
 
@@ -1062,7 +1062,7 @@ def main():
             os.makedirs(output_folder)
 
         print("Dumping using setting:", candidate[0])
-        dump_data(args.input, output_folder, candidate, candidate[2])
+        dump_data(args.input, output_folder, candidate, candidate[2], args.dump_unreferenced)
 
 
     # for filename, data in [("hash_list.pkl", hash_list), ("used_hash_list.pkl", used_hash_list), ("unknown_hash_list.pkl", unknown_hash_list), ("final_hash_list.pkl", used_hash_list)]:
