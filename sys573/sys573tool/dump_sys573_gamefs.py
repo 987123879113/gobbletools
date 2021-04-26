@@ -641,6 +641,7 @@ def get_card_filenames(input_folder, main_card_filename=None):
             "GE885JAA.DAT",
             "GC845EBA.DAT",
             "GQ894JAA.DAT",
+            "GE984JAA.DAT",
             "GQ886AA.DAT",
             "GQ886EA.DAT",
             "GQ886JA.DAT",
@@ -988,6 +989,7 @@ def main():
     filetables.append((read_file_table_ddr, 0x100000, os.path.join(args.input, "GE885JAA.DAT"), 2))
     filetables.append((read_file_table_ddr, 0x100000, os.path.join(args.input, "GC845EBA.DAT"), 2))
     filetables.append((read_file_table_ddr, 0x100000, os.path.join(args.input, "GQ894JAA.DAT"), 2))
+    filetables.append((read_file_table_ddr, 0x100000, os.path.join(args.input, "GE984JAA.DAT"), 2))
     filetables.append((read_file_table_ddr_dancingstage, 0x401000, os.path.join(args.input, "GAME.DAT"), 2))
     filetables.append((read_file_table_ddr_dancingstage, 0x401000, os.path.join(args.input, "GC910JC.BIN"), 2)) # Dancing Stage
     filetables.append((read_file_table_ddr_dancingstage, 0x401000, os.path.join(args.input, "GC910JA.BIN"), 2)) # Dancing Stage
