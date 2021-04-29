@@ -63,7 +63,7 @@ class CsqWriter:
 
         # These orders are based on the common layout found in DDR Extreme files
         order = ['tempo', 'events', 'notes', 'lamps', 'anim']
-        notes_order = ["single-basic", "double-basic", "single-standard", "double-standard", "single-heavy", "double-heavy", "single-beginner", "double-beginner", "single-challenge", "double-challenge"]
+        notes_order = ["single-basic", "double-basic", "single-standard", "double-standard", "single-heavy", "double-heavy", "single-beginner", "double-beginner", "single-challenge", "double-challenge", "double-battle"]
 
         for k in order:
             chunks = []
@@ -115,11 +115,19 @@ class CsqWriter:
             "single-beginner": 0x0414,
             "single-challenge": 0x0614,
 
+            "solo-basic": 0x0116,
+            "solo-standard": 0x0216,
+            "solo-heavy": 0x0316,
+            "solo-beginner": 0x0416,
+            "solo-challenge": 0x0616,
+
             "double-basic": 0x0118,
             "double-standard": 0x0218,
             "double-heavy": 0x0318,
             "double-beginner": 0x0418,
             "double-challenge": 0x0618,
+
+            "double-battle": 0x1024,
         }.get(chunk['events']['chart_type'], chunk['events']['chart_type'])
 
         note_lookup = {
@@ -492,7 +500,7 @@ class CsqReader:
             'events': self.parse_events_chunk,
             'notes': self.parse_note_events_chunk,
             'lamps': self.parse_lamp_events_chunk,
-            'anim': self.parse_anim_chunk_raw,
+            # 'anim': self.parse_anim_chunk_raw,
         }
 
         while data:
@@ -621,11 +629,19 @@ class CsqReader:
             0x0414: "single-beginner",
             0x0614: "single-challenge",
 
+            0x0116: "solo-basic",
+            0x0216: "solo-standard",
+            0x0316: "solo-heavy",
+            0x0416: "solo-beginner",
+            0x0616: "solo-challenge",
+
             0x0118: "double-basic",
             0x0218: "double-standard",
             0x0318: "double-heavy",
             0x0418: "double-beginner",
             0x0618: "double-challenge",
+
+            0x1024: "double-battle",
         }.get(chart_type, chart_type)
 
         event_offsets = [int.from_bytes(data[6+x*4:6+(x+1)*4], 'little', signed=True) for x in range(count)]
@@ -663,17 +679,28 @@ class CsqReader:
             else:
                 for i in range(8):
                     if (note_raw & (1 << i)) != 0:
-                        n = {
-                            0x00: 'p1_l',
-                            0x01: 'p1_d',
-                            0x02: 'p1_u',
-                            0x03: 'p1_r',
+                        if "solo" in chart_type:
 
-                            0x04: 'p2_l',
-                            0x05: 'p2_d',
-                            0x06: 'p2_u',
-                            0x07: 'p2_r',
-                        }[i]
+                            n = {
+                                0x00: 'solo_l',
+                                0x01: 'solo_d',
+                                0x02: 'solo_u',
+                                0x03: 'solo_r',
+                                0x04: 'solo_ul',
+                                0x06: 'solo_ur',
+                            }[i]
+
+                        else:
+                            n = {
+                                0x00: 'p1_l',
+                                0x01: 'p1_d',
+                                0x02: 'p1_u',
+                                0x03: 'p1_r',
+                                0x04: 'p2_l',
+                                0x05: 'p2_d',
+                                0x06: 'p2_u',
+                                0x07: 'p2_r',
+                            }[i]
 
                         notes.append(n)
 
@@ -718,7 +745,7 @@ class CsqReader:
 
 
     def parse_anim_chunk_raw(self, data):
-        assert(int.from_bytes(data[:2], 'little') == 0)
+        assert(int.from_bytes(data[:2], 'little') == 0) # What is this used for?
         count = int.from_bytes(data[2:4], 'little')
         assert(int.from_bytes(data[4:6], 'little') == 0)
 
@@ -1520,7 +1547,7 @@ class SmWriter:
                 continue
 
             for event in top_event['events']['events']:
-                beat = round(sum(event['measure']) * 4)
+                beat = sum(event['measure']) * 4
 
                 if event['_bpm'] == 0:
                     if beat not in stops:
@@ -1542,7 +1569,7 @@ class SmWriter:
 #OFFSET:0;
 #BPMS:%s;
 #STOPS:%s;
-""" % (",".join(["%d=%f" % (k, bpms[k]) for k in bpms]), ",".join(["%d=%f" % (k, stops[k]) for k in stops]))
+""" % (",".join(["%f=%f" % (k, bpms[k]) for k in bpms]), ",".join(["%f=%f" % (k, stops[k]) for k in stops]))
 
         last_measure = None
         for top_event in self.events:
@@ -1552,7 +1579,6 @@ class SmWriter:
             for event in top_event['events']:
                 if event['event'] == "end":
                     last_measure = int(sum(event['measure']) + 1)
-
 
         for top_event in self.events:
             if top_event['type'] != "notes":
@@ -1564,11 +1590,17 @@ class SmWriter:
                 "single-standard": ("dance-single", "Medium"),
                 "single-heavy": ("dance-single", "Hard"),
                 "single-challenge": ("dance-single", "Challenge"),
+                "solo-beginner": ("dance-solo", "Beginner"),
+                "solo-basic": ("dance-solo", "Easy"),
+                "solo-standard": ("dance-solo", "Medium"),
+                "solo-heavy": ("dance-solo", "Hard"),
+                "solo-challenge": ("dance-solo", "Challenge"),
                 "double-beginner": ("dance-double", "Beginner"),
                 "double-basic": ("dance-double", "Easy"),
                 "double-standard": ("dance-double", "Medium"),
                 "double-heavy": ("dance-double", "Hard"),
                 "double-challenge": ("dance-double", "Challenge"),
+                "double-battle": ("dance-double", "Edit"),
             }[top_event['events']['chart_type']]
 
             diff_rating = 1
@@ -1579,13 +1611,19 @@ class SmWriter:
 
             measure_data = {}
             for event in top_event['events']['events']:
-                print(event)
+                # print(event)
 
                 measaure = event['measure'][0]
                 beat = round(event['measure'][1] * 192)
 
                 if measaure not in measure_data:
-                    d = "00000000" if "double" in chart_type else "0000"
+                    d = "0000"
+
+                    if "double" in chart_type:
+                        d += "0000"
+                    elif "single" in chart_type:
+                        d += "00"
+
                     measure_data[measaure] = [d] * 192
 
                 # print(event['beat'], len(measure_data[event['measure'][0]]))
@@ -1602,6 +1640,13 @@ class SmWriter:
                         "p2_d": 5,
                         "p2_u": 6,
                         "p2_r": 7,
+
+                        "solo_l": 0,
+                        "solo_ul": 1,
+                        "solo_d": 2,
+                        "solo_u": 3,
+                        "solo_ur": 4,
+                        "solo_r": 5,
                     }[note]
 
                     note_type = "1"
@@ -1618,20 +1663,27 @@ class SmWriter:
 
             for i in range(last_measure):
                 if i not in measure_data:
-                    d = "00000000" if "double" in chart_type else "0000"
+                    d = "0000"
+
+                    if "double" in chart_type:
+                        d += "0000"
+                    elif "single" in chart_type:
+                        d += "00"
+
                     measure_data[i] = [d]
 
             arrow_data = "\n,\n".join(["\n".join(measure_data[k]) for k in sorted(list(measure_data.keys()))])
 
-            chart +="""
-    #NOTES:
-        %s:
-        :
-        %s:
-        %d:
-        0,0,0,0,0:
-    %s
-    ;""" % (chart_type, chart_diff, diff_rating, arrow_data)
+            if len(top_event['events']['events']) > 0:
+                chart +="""
+#NOTES:
+%s:
+:
+%s:
+%d:
+0,0,0,0,0:
+%s
+;""" % (chart_type, chart_diff, diff_rating, arrow_data)
 
         open(filename, "w").write(chart)
 
