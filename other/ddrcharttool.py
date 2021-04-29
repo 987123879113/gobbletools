@@ -1,5 +1,6 @@
 import argparse
 import copy
+import json
 import os
 import shutil
 import string
@@ -1469,17 +1470,28 @@ class SmReader:
 
                 for i, c in enumerate(beat):
                     if c in ["1", "2", "3"]:
-                        n = {
-                            0x00: 'p1_l',
-                            0x01: 'p1_d',
-                            0x02: 'p1_u',
-                            0x03: 'p1_r',
+                        if "solo" in chart_type:
+                            n = {
+                                0x00: 'solo_l',
+                                0x01: 'solo_ul',
+                                0x02: 'solo_d',
+                                0x03: 'solo_u',
+                                0x04: 'solo_ur',
+                                0x05: 'solo_r',
+                            }[i]
 
-                            0x04: 'p2_l',
-                            0x05: 'p2_d',
-                            0x06: 'p2_u',
-                            0x07: 'p2_r',
-                        }[i]
+                        else:
+                            n = {
+                                0x00: 'p1_l',
+                                0x01: 'p1_d',
+                                0x02: 'p1_u',
+                                0x03: 'p1_r',
+
+                                0x04: 'p2_l',
+                                0x05: 'p2_d',
+                                0x06: 'p2_u',
+                                0x07: 'p2_r',
+                            }[i]
 
                         if c in ["2", "3"]:
                             release_events.append({
@@ -1504,6 +1516,7 @@ class SmReader:
         chart_type_lookup = {
             "dance-single": "single",
             "dance-double": "double",
+            "dance-solo": "solo",
         }
 
         difficulty_lookup = {
@@ -1512,6 +1525,7 @@ class SmReader:
             "medium": "standard",
             "hard": "heavy",
             "challenge": "challenge",
+            "edit": "battle",
         }
 
         if chart_type.lower() not in chart_type_lookup:
