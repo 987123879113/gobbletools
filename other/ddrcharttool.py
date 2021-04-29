@@ -63,7 +63,7 @@ class CsqWriter:
 
         # These orders are based on the common layout found in DDR Extreme files
         order = ['tempo', 'events', 'notes', 'lamps', 'anim']
-        notes_order = ["single-basic", "double-basic", "single-standard", "double-standard", "single-heavy", "double-heavy", "single-beginner", "double-beginner", "single-challenge", "double-challenge", "double-battle"]
+        notes_order = ["single-basic", "double-basic", "single-standard", "double-standard", "single-heavy", "double-heavy", "single-beginner", "double-beginner", "single-challenge", "double-challenge", "double-battle", "solo-basic", "solo-standard", "solo-heavy", "solo-beginner", "solo-challenge"]
 
         for k in order:
             chunks = []
