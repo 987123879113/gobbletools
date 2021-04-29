@@ -680,7 +680,6 @@ class CsqReader:
                 for i in range(8):
                     if (note_raw & (1 << i)) != 0:
                         if "solo" in chart_type:
-
                             n = {
                                 0x00: 'solo_l',
                                 0x01: 'solo_d',
@@ -1621,7 +1620,7 @@ class SmWriter:
 
                     if "double" in chart_type:
                         d += "0000"
-                    elif "single" in chart_type:
+                    elif "solo" in chart_type:
                         d += "00"
 
                     measure_data[measaure] = [d] * 192
@@ -1667,7 +1666,7 @@ class SmWriter:
 
                     if "double" in chart_type:
                         d += "0000"
-                    elif "single" in chart_type:
+                    elif "solo" in chart_type:
                         d += "00"
 
                     measure_data[i] = [d]
