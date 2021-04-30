@@ -635,12 +635,6 @@ class CsqReader:
             0x0416: "solo-beginner",
             0x0616: "solo-challenge",
 
-            0xf116: "solo3-basic",
-            0xf216: "solo3-standard",
-            0xf316: "solo3-heavy",
-            0xf416: "solo3-beginner",
-            0xf616: "solo3-challenge",
-
             0x0118: "double-basic",
             0x0218: "double-standard",
             0x0318: "double-heavy",
@@ -648,6 +642,13 @@ class CsqReader:
             0x0618: "double-challenge",
 
             0x1024: "double-battle",
+
+            # fxxx range is just a hack and not an official chart range
+            0xf116: "solo3-basic",
+            0xf216: "solo3-standard",
+            0xf316: "solo3-heavy",
+            0xf416: "solo3-beginner",
+            0xf616: "solo3-challenge",
         }.get(chart_type, chart_type)
 
         event_offsets = [int.from_bytes(data[6+x*4:6+(x+1)*4], 'little', signed=True) for x in range(count)]
