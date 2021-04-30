@@ -141,6 +141,13 @@ class CsqWriter:
             'p2_d': 0x05,
             'p2_u': 0x06,
             'p2_r': 0x07,
+
+            'solo_l': 0x00,
+            'solo_ul': 0x01,
+            'solo_d': 0x02,
+            'solo_u': 0x03,
+            'solo_ur': 0x04,
+            'solo_r': 0x05,
         }
 
         # Sort events so that release events happen directly after their starting event
@@ -187,10 +194,6 @@ class CsqWriter:
                         i -= 1
 
                         if bool(set(sorted_events[i]['notes']) & set(event['notes'])):
-                            print(sorted_events[i], start_i, i)
-                            print(event)
-                            print()
-
                             sorted_events.insert(i+1, event)
 
                             found = True
@@ -201,10 +204,6 @@ class CsqWriter:
 
             if not found:
                 sorted_events.append(event)
-
-        for event in sorted_events:
-            print(event)
-
 
         output = bytearray()
         output += int.to_bytes(0x03, 2, 'little')
@@ -635,6 +634,12 @@ class CsqReader:
             0x0316: "solo-heavy",
             0x0416: "solo-beginner",
             0x0616: "solo-challenge",
+
+            0xf116: "solo3-basic",
+            0xf216: "solo3-standard",
+            0xf316: "solo3-heavy",
+            0xf416: "solo3-beginner",
+            0xf616: "solo3-challenge",
 
             0x0118: "double-basic",
             0x0218: "double-standard",
@@ -1135,6 +1140,23 @@ class CmsReader:
                 chunks.append(chart[4:chunk_size])
                 chart = chart[chunk_size:]
 
+        is_solo_cms = False
+        for idx, chunk in enumerate(chunks):
+            if not chunk:
+                continue
+
+            if idx > 0:
+                if int.from_bytes(chunk[0x08:0x0c], 'little') != 0xffffffff:
+                    print("Didn't find expected header for chart")
+                    exit(1)
+
+                chart_type = chunk[0] # 0 = single, 1 = solo??, 2 = double
+                is_solo = chart_type == 1 # ??
+
+                if is_solo:
+                    is_solo_cms = True
+                    break
+
         new_chunks = []
         for idx, chunk in enumerate(chunks):
             if not chunk:
@@ -1173,8 +1195,6 @@ class CmsReader:
                     exit(1)
 
                 chart_type = chunk[0] # 0 = single, 1 = solo??, 2 = double
-                is_solo = chart_type == 1 # ??
-                is_double = chart_type == 2
                 diff = chunk[1]
 
                 events = [(int.from_bytes(chunk[0x0c+i:0x0c+i+4], 'little'), chunk[0x0c+i+4:0x0c+i+8]) for i in range(0, len(chunk) - 0x0c, 8)]
@@ -1199,17 +1219,29 @@ class CmsReader:
                     p2_up = (event[1][3] & 0x01) != 0
 
                     note = (p1_right << 3) | (p1_up << 2) | (p1_down << 1) | p1_left
-
-                    if is_double:
-                        note |= ((p2_right << 3) | (p2_up << 2) | (p2_down << 1) | p2_left) << 4
+                    note |= ((p2_right << 3) | (p2_up << 2) | (p2_down << 1) | p2_left) << 4
 
                     event_chunks.append((event[0], note))
 
-                print("%d %d %d" % (chart_type, diff, len(event_chunks)))
-
                 chunk = bytearray()
                 chunk += int.to_bytes(3, 2, 'little')
-                chunk += int.to_bytes(0x14 + (chart_type * 2), 1, 'little')
+
+                if is_solo_cms:
+                    if chart_type == 0:
+                        chart_idx = 0x16 # 6 panel
+
+                    elif chart_type == 1:
+                        chart_idx = 0x14 # 4 panel
+
+                    elif chart_type == 2:
+                        chart_idx = 0x16 # 3 panel
+                        diff += 0xf0 # This is a hack for 3 panel modes to be handled as edit charts
+
+                    chunk += int.to_bytes(chart_idx, 1, 'little')
+
+                else:
+                    chunk += int.to_bytes(0x14 + (chart_type * 2), 1, 'little')
+
                 chunk += int.to_bytes(diff + 1, 1, 'little')
                 chunk += int.to_bytes(len(event_chunks), 4, 'little')
 
@@ -1608,6 +1640,11 @@ class SmWriter:
                 "solo-standard": ("dance-solo", "Medium"),
                 "solo-heavy": ("dance-solo", "Hard"),
                 "solo-challenge": ("dance-solo", "Challenge"),
+                "solo3-beginner": ("dance-solo", "Edit"),
+                "solo3-basic": ("dance-solo", "Edit"),
+                "solo3-standard": ("dance-solo", "Edit"),
+                "solo3-heavy": ("dance-solo", "Edit"),
+                "solo3-challenge": ("dance-solo", "Edit"),
                 "double-beginner": ("dance-double", "Beginner"),
                 "double-basic": ("dance-double", "Easy"),
                 "double-standard": ("dance-double", "Medium"),
@@ -1624,8 +1661,6 @@ class SmWriter:
 
             measure_data = {}
             for event in top_event['events']['events']:
-                # print(event)
-
                 measaure = event['measure'][0]
                 beat = round(event['measure'][1] * 192)
 
@@ -1638,8 +1673,6 @@ class SmWriter:
                         d += "00"
 
                     measure_data[measaure] = [d] * 192
-
-                # print(event['beat'], len(measure_data[event['measure'][0]]))
 
                 note_data = measure_data[measaure][beat]
 
