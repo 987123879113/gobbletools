@@ -554,7 +554,7 @@ class CsqReader:
         assert(int.from_bytes(data[4:6], 'little') == 0)
 
         time_offsets = [int.from_bytes(data[6+x*4:6+(x+1)*4], 'little', signed=True) for x in range(count)]
-        time_data = [max(0, min(int.from_bytes(data[6+x*4:6+(x+1)*4], 'little'), 0x7fff)) for x in range(count, count * 2)]
+        time_data = [int.from_bytes(data[6+x*4:6+(x+1)*4], 'little', signed=True) for x in range(count, count * 2)]
 
         sample_rate = 294 * tick_rate
 
