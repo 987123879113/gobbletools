@@ -1427,13 +1427,36 @@ class SmReader:
 
                 bpm_changes[a].append((k, b))
 
+        # Hack to fix stops without an associated start
+        # A certain SM file of Vertex^2 has some odd properties:
+        #   - Stop and starts on different beats (stops on 156 for 0.429, next BPM on 158)
+        #   - Stop without a BPM change after (stops on 444.5 and 446.5 but the last BPM change is at 407)
+        # This code tries to find either the last BPM change or the next BPM change and associate it with the stop command
+        for k in bpm_changes:
+            stops = [x for x in bpm_changes[k] if x[0] == "stops"]
+            bpms = [x for x in bpm_changes[k] if x[0] == "bpms"]
+
+            if stops and not bpms:
+                # Find next BPM
+                next_bpm = None
+                for k2 in bpm_changes:
+                    bpms = [x for x in bpm_changes[k2] if x[0] == "bpms"]
+
+                    if bpms:
+                        next_bpm = bpms[0]
+
+                        if k2 >= k:
+                            break
+
+                bpm_changes[k].append(next_bpm)
+
         events = []
 
         last_timestamp = 0
         last_beat = 0
         last_bpm = 0
 
-        for beat in bpm_changes:
+        for beat in sorted(bpm_changes):
             measure = int(beat * 1024)
             m = int(measure / 4096)
             n = (measure - (m * 4096)) / 4096
@@ -1443,20 +1466,21 @@ class SmReader:
                     'measure': (m, n),
                 }
 
+                timestamp = (((1 / (last_bpm / 60000)) * (beat - last_beat)) / 1000) + last_timestamp if beat != 0 else 0
+
                 if event_type == "bpms":
-                    timestamp = (((1 / (last_bpm / 60000)) * (beat - last_beat)) / 1000) + last_timestamp if beat != 0 else 0
                     event['bpm'] = value
                     last_bpm = value
 
                 elif event_type == "stops":
-                    timestamp = last_timestamp + (((beat - last_beat) / last_bpm) * 60) + value
+                    event['duration'] = value
+                    timestamp += value
 
                 last_timestamp = timestamp
                 last_beat = beat
 
                 event['timestamp'] = timestamp
                 events.append(event)
-
 
         if self.last_measure:
             event = {
@@ -1472,7 +1496,7 @@ class SmReader:
             'type': "tempo",
             'events': {
                 'tick_rate': self.tick_rate,
-                'events': events,
+                'events': sorted(events, key=lambda x:x['measure']),
             }
         }
 
