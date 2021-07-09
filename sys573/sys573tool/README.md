@@ -2,6 +2,10 @@
 
 This is a combination of `dump_sys573_gamefs.py`, `build_sys573_gamefs.py`, and `calc_checksum.py`.
 
+sys573tool requires Cython. Build the required files using `python setup.py build_ext --inplace`.
+
+### Usage
+
 ```
 usage: sys573tool.py [-h] --mode {dump,build,checksum}
 
