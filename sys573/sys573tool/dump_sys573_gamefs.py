@@ -1016,6 +1016,10 @@ def main():
     filetables.append((read_file_table_gfdm3, 0x736000, os.path.join(args.input, "GAME.DAT"), 2)) # Percussion Freaks 4th AAA
     filetables.append((read_file_table_gfdm3, 0x8a5000, os.path.join(args.input, "GAME.DAT"), 2)) # Percussion Freaks 3rd? KAA
     filetables.append((read_file_table_gfdm2, 0x178000, os.path.join(args.input, "GQ883JA.DAT"), 1)) # Guitar Freaks 2nd Mix
+    filetables.append((read_file_table_gfdm2, 0x178000, os.path.join(args.input, "GQ883UA.DAT"), 1)) # Guitar Freaks 2nd Mix
+    filetables.append((read_file_table_gfdm2, 0x178000, os.path.join(args.input, "GQ883KA.DAT"), 1)) # Guitar Freaks 2nd Mix
+    filetables.append((read_file_table_gfdm2, 0x178000, os.path.join(args.input, "GQ883AA.DAT"), 1)) # Guitar Freaks 2nd Mix
+    filetables.append((read_file_table_gfdm2, 0x178000, os.path.join(args.input, "GQ883EA.DAT"), 1)) # Guitar Freaks 2nd Mix
     filetables.append((read_file_table_gfdm2, 0x100000, os.path.join(args.input, "GQ886JA.DAT"), 1)) # Guitar Freaks
     filetables.append((read_file_table_gfdm2, 0x100000, os.path.join(args.input, "GQ886AA.DAT"), 1))
     filetables.append((read_file_table_gfdm2, 0x100000, os.path.join(args.input, "GQ886EA.DAT"), 1))
