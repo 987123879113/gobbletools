@@ -18,36 +18,60 @@ BLOCK_SIZE = 4 # This fixes a weird coloring issue causing nearby colors to blee
 def parse_character_model(filename, texture_filename, output_folder=None, output_format="stepmania", face_count=4, face_width=64, face_height=64, disable_modify_face_texture=False, bones_filename=None):
     VERTEX_SCALE = 100
 
-    MESH_NAMES = [
-        "Pelvis",
-        "R upper leg",
-        "R leg",
-        "R foot",
-        "L upper leg",
-        "L leg",
-        "L foot",
-        "Torso",
-        "R upper arm",
-        "R arm",
-        "L upper arm",
-        "L arm",
-        "Neck",
-        "R hand",
-        "R hand 2",
-        "R hand 3",
-        "R hand 4",
-        "R hand 5",
-        "L hand",
-        "L hand 2",
-        "L hand 3",
-        "L hand 4",
-        "L hand 5",
-        "Head",
-        "Face",
-        "Face 2",
-        "Face 3",
-        "Face 4",
-    ]
+    MESH_NAMES = {
+        28: [
+            "Pelvis",
+            "R upper leg",
+            "R leg",
+            "R foot",
+            "L upper leg",
+            "L leg",
+            "L foot",
+            "Torso",
+            "R upper arm",
+            "R arm",
+            "L upper arm",
+            "L arm",
+            "Neck",
+            "R hand",
+            "R hand 2",
+            "R hand 3",
+            "R hand 4",
+            "R hand 5",
+            "L hand",
+            "L hand 2",
+            "L hand 3",
+            "L hand 4",
+            "L hand 5",
+            "Head",
+            "Face",
+            "Face 2",
+            "Face 3",
+            "Face 4",
+        ],
+        20: [
+            "Pelvis",
+            "R upper leg",
+            "R leg",
+            "R foot",
+            "L upper leg",
+            "L leg",
+            "L foot",
+            "Torso",
+            "R upper arm",
+            "R arm",
+            "L upper arm",
+            "L arm",
+            "Neck",
+            "R hand",
+            "L hand",
+            "Head",
+            "Face",
+            "Face 2",
+            "Face 3",
+            "Face 4",
+        ],
+    }
 
     MESH_BONE_LOOKUP = {
         "Pelvis": 2,
@@ -165,9 +189,14 @@ def parse_character_model(filename, texture_filename, output_folder=None, output
 
                 bone_name = mesh_name
                 if i // 8 >= unique_cnt and output_format == "stepmania":
-                    logging.info("\t\t\t%d x[%f] y[%f] z[%f] %s" % (linked, *(all_vertices[linked][0]), all_vertices[linked][1]))
-                    x, y, z = all_vertices[linked][0]
-                    bone_name = all_vertices[linked][1]
+                    if linked >= len(all_vertices):
+                        # This might mean that the vertexes need to be linked after everything is parsed fully once
+                        logging.error("Couldn't find linked vertex %d" % linked)
+
+                    else:
+                        logging.info("\t\t\t%d x[%f] y[%f] z[%f] %s" % (linked, *(all_vertices[linked][0]), all_vertices[linked][1]))
+                        x, y, z = all_vertices[linked][0]
+                        bone_name = all_vertices[linked][1]
 
                 verts.append((x, y, z))
                 bones.append(MESH_BONE_LOOKUP.get(bone_name, -1 if output_format == "stepmania" else 0))
@@ -420,20 +449,22 @@ def parse_character_model(filename, texture_filename, output_folder=None, output
     data = bytearray(open(filename, "rb").read())
     mesh_cnt = int.from_bytes(data[8:12], 'little')
 
-    assert(mesh_cnt == 0x1c) # Probably will trigger for any non-character models
+    # Probably will trigger for any non-character models
+    # Also some earlier games use models with 20 meshes instead of 28, which have less hand variants
+    assert(mesh_cnt in MESH_NAMES)
 
     meshes = []
     for i in range(mesh_cnt):
-        if output_format == "stepmania" and MESH_NAMES[i] not in MESH_BONE_LOOKUP:
+        if output_format == "stepmania" and MESH_NAMES[mesh_cnt][i] not in MESH_BONE_LOOKUP:
             continue
 
         offset = int.from_bytes(data[0x20+(0x0c*i):0x20+(0x0c*i)+4], 'little') + 0x20
         chunk_cnt = int.from_bytes(data[0x20+(0x0c*i)+4:0x20+(0x0c*i)+8], 'little')
 
-        mesh = parse_chunk(data, offset, chunk_cnt, MESH_NAMES[i], i)
+        mesh = parse_chunk(data, offset, chunk_cnt, MESH_NAMES[mesh_cnt][i], i)
 
         if mesh:
-            mesh['mesh'].metadata['name'] = MESH_NAMES[i]
+            mesh['mesh'].metadata['name'] = MESH_NAMES[mesh_cnt][i]
             meshes.append(mesh)
 
 

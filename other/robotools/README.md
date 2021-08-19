@@ -51,4 +51,4 @@ optional arguments:
 - A few characters use vertex coloring for hair. By default these will be written to the face textures when converting for Stepmania usage. If this causes problems, you can use `--disable-modify-face-texture` and it'll write the color to an unused part of the texture instead.
 - The characters rendered for Stepmania use the bones as the old DDR PC rips (_DDRPC_common_Dance0001.bones.txt, etc).
 - Some characters like `ringf` and `ringm` in DDR 3rd Mix require special modifications for the face textures. You will also likely need to modify `face.ini` for these characters.
-
+- Textures for older games that use models with 20 meshes instead of 28 seem to be messed up.
