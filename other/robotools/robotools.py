@@ -71,6 +71,37 @@ def parse_character_model(filename, texture_filename, output_folder=None, output
             "Face 3",
             "Face 4",
         ],
+        29: [
+            "Pelvis",
+            "R upper leg",
+            "R leg",
+            "R foot",
+            "L upper leg",
+            "L leg",
+            "L foot",
+            "Torso",
+            "R upper arm",
+            "R arm",
+            "L upper arm",
+            "L arm",
+            "Neck",
+            "R hand",
+            "R hand 2",
+            "R hand 3",
+            "R hand 4",
+            "R hand 5",
+            "L hand",
+            "L hand 2",
+            "L hand 3",
+            "L hand 4",
+            "L hand 5",
+            "Head",
+            "Face",
+            "Face 2",
+            "Face 3",
+            "Face 4",
+            "Face 5",
+        ],
     }
 
     MESH_BONE_LOOKUP = {
@@ -110,7 +141,7 @@ def parse_character_model(filename, texture_filename, output_folder=None, output
     vertex_colors = {}
 
     if texture_filename is None:
-        for ext in [".ctx", ".cmt"]:
+        for ext in [".ctx", ".cmt", ".tex"]:
             texture_filename = os.path.splitext(filename)[0] + ext
             if os.path.exists(texture_filename):
                 break
