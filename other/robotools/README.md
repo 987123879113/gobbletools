@@ -14,7 +14,7 @@ Replace `python3` with `python` in the following commands based on your system c
 
 Install required libraries using the included requirements.txt.
 ```bash
-python3 -m pip install requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 ## Usage
