@@ -4,7 +4,7 @@ This tool converts character models used in AC and PS1 (maybe more?) DDR games.
 
 This tool is provided AS-IS. This project was to satisfy my curiosity about the character model format. I don't play Stepmania so I have no interest in making release quality character conversions, but these tools should cover a lot of the work that is required to make the character conversions playable in Stepmania, with some additional tweaks required. Please do not ask me to fix bugs or add new features. If you find a bug and want to fix it, please submit a pull request via Github. Please do not message me telling me how to fix x problem, just submit a pull request.
 
-This tool can output to `.glb`, `.obj`, and Stepmania character folder (`.txt` + template files) formats. The formats `.glb` and `.obj` can be opened with Blender. The Stepmania character folder can be opened with MilkShape 3D and obvious Stepmania.
+This tool can output to `.glb`/`.gltf`, `.obj`, and Stepmania character folder (`.txt` + template files) formats. The formats `.glb`/`.gltf` and `.obj` can be opened with Blender. The Stepmania character folder can be opened with MilkShape 3D and obvious Stepmania.
 
 ## Setup
 
@@ -20,8 +20,7 @@ python3 -m pip install -r requirements.txt
 ## Usage
 
 ```
-usage: robotools.py [-h] --input-model INPUT_MODEL [--input-texture INPUT_TEXTURE] [--output OUTPUT] [--output-format {stepmania,obj,glb}] [--face-count FACE_COUNT] [--face-width FACE_WIDTH] [--face-height FACE_HEIGHT] [--disable-modify-face-texture] [--verbose]
-                    [--input-bones INPUT_BONES]
+usage: robotools.py [-h] --input-model INPUT_MODEL [--input-texture INPUT_TEXTURE] [--output OUTPUT] [--output-format {stepmania,obj,glb,gltf}] [--face-count FACE_COUNT] [--face-width FACE_WIDTH] [--face-height FACE_HEIGHT] [--disable-modify-face-texture] [--verbose] [--input-bones INPUT_BONES]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -30,7 +29,7 @@ optional arguments:
   --input-texture INPUT_TEXTURE
                         Input texture filename
   --output OUTPUT       Output folder
-  --output-format {stepmania,obj,glb}
+  --output-format {stepmania,obj,glb,gltf}
                         Output format
   --face-count FACE_COUNT
                         Number of faces in texture

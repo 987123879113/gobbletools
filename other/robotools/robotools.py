@@ -498,13 +498,12 @@ def parse_character_model(filename, texture_filename, output_folder=None, output
             mesh['mesh'].metadata['name'] = MESH_NAMES[mesh_cnt][i]
             meshes.append(mesh)
 
-
     # Save data
     if output_folder is None:
         basename = os.path.splitext(os.path.basename(filename))[0]
         output_folder = "output_" + basename
 
-    if output_format in ["glb" , "obj"]:
+    if output_format in ["glb" , "obj", "gltf"]:
         os.makedirs(output_folder, exist_ok=True)
 
         scene = trimesh.Scene()
@@ -515,6 +514,11 @@ def parse_character_model(filename, texture_filename, output_folder=None, output
         if output_format == "glb":
             data = scene.export(file_type="glb")
             open(os.path.join(output_folder, "output.glb"), "wb").write(data)
+
+        elif output_format == "gltf":
+            data = scene.export(file_type="gltf")
+            for k in data:
+                open(os.path.join(output_folder, k), "wb").write(data[k])
 
         elif output_format == "obj":
             data = scene.export(file_type="obj", return_texture=True)
@@ -675,7 +679,7 @@ if __name__ == "__main__":
     parser.add_argument('--input-model', help='Input model filename', default=None, required=True)
     parser.add_argument('--input-texture', help='Input texture filename', default=None)
     parser.add_argument('--output', help='Output folder', default=None)
-    parser.add_argument('--output-format', help='Output format', default="stepmania", choices=["stepmania", "obj", "glb"])
+    parser.add_argument('--output-format', help='Output format', default="stepmania", choices=["stepmania", "obj", "glb", "gltf"])
     parser.add_argument('--face-count', help='Number of faces in texture', default=4, type=int)
     parser.add_argument('--face-width', help='Width of face texture', default=64, type=int)
     parser.add_argument('--face-height', help='Height of face texture', default=64, type=int)
