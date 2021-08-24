@@ -102,6 +102,25 @@ def parse_character_model(filename, texture_filename, output_folder=None, output
             "Face 4",
             "Face 5",
         ],
+        17: [
+            "Pelvis",
+            "R upper leg",
+            "R leg",
+            "R foot",
+            "L upper leg",
+            "L leg",
+            "L foot",
+            "Torso",
+            "R upper arm",
+            "R arm",
+            "L upper arm",
+            "L arm",
+            "Neck",
+            "R hand",
+            "L hand",
+            "Head",
+            "Face",
+        ],
     }
 
     MESH_BONE_LOOKUP = {
