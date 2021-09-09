@@ -1,0 +1,11 @@
+__pycache__
+*.mp3
+*.m4a
+*.DAT
+build/
+DAT/
+*.c
+*.cpp
+*.so
+*.html
+\#[^\\]*/
