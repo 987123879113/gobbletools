@@ -169,6 +169,8 @@ class MsuClientBase:
 
 class MsuSessionClient(MsuClientBase):
     packet_output_buffers = {}
+    timestamp_looper = None
+    cur_timestamp = 0
 
     def __init__(self):
         print("MsuSessionClient")
@@ -176,6 +178,17 @@ class MsuSessionClient(MsuClientBase):
         self.client_id = 0
         self.client_name = b"SESSION"
         self.msu_server.register_client(self, self.client_id)
+
+
+    def broadcast_timestamp_update(self):
+        if self.cur_timestamp > 0xffffff:
+            self.msu_server.broadcast_packet(self, bytearray([0x46]) + int.to_bytes(self.cur_timestamp, 4, 'little'))
+
+        else:
+            self.msu_server.broadcast_packet(self, bytearray([0x4e]) + int.to_bytes(self.cur_timestamp, 3, 'little'))
+
+        self.cur_timestamp += 750
+
 
 
     # Opcode handlers
@@ -388,6 +401,19 @@ class MsuSessionClient(MsuClientBase):
         param5 = (packet[1] >> 6) & 3
         param8 = (packet[2] >> 3) & 3
         # Used in another call: FUN_8000e36c([4, 0, 1, 2, 3][self.client_id], (param8 << 8) | (param2 << 6) | (param3 << 4) | (param4 << 2) | param5)
+
+
+        # Possibly in charge of starting songs?
+        # param1 == 1 is start song?
+        # param1 == 0 is stop song?
+
+        if param1 == 1:
+            self.cur_timestamp = 0
+            self.timestamp_looper = task.LoopingCall(self.broadcast_timestamp_update)
+            self.timestamp_looper.start(0.025)
+
+        elif param1 == 0 and self.timestamp_looper is not None and self.timestamp_looper.running:
+            self.timestamp_looper.stop()
 
         response_payload = bytearray([int((2 if param8 == 2 else 1) == 1)])
         response = PacketResponse(0x51, response_payload)
@@ -718,9 +744,8 @@ class MsuClient(MsuClientBase, Protocol):
 
             else:
                 # print("Checksum good")
-                pass
 
-            self.packets.append(packet_clean)
+                self.packets.append(packet_clean)
 
             self.packet_input_buffers.remove(packet)
 
