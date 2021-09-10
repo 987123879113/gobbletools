@@ -280,7 +280,7 @@ class MsuSessionClient(MsuClientBase):
         # Sets +0x1a04 to 1
         # Will return either 1 or 2? Seems to only be set at 0x800005cc
         # Possibly related to file loading???
-        val = 1
+        val = 0
         response_payload = bytearray([0x04]) + int.to_bytes(val, 4, 'little') # Big endian?
         response = PacketResponse(0x21, response_payload)
         return packet, response
@@ -407,8 +407,12 @@ class MsuSessionClient(MsuClientBase):
         # param1 == 1 is start song?
         # param1 == 0 is stop song?
 
-        if param1 == 1:
+        if param1 == 1 and packet[1] == 0 and packet[2] == 0: # Don't know the exact conditions
             self.cur_timestamp = 0
+            print("param1[%02x] param2[%02x] param3[%02x]" % (packet[0], packet[1], packet[2]))
+            reactor.stop()
+            exit(1)
+
             self.timestamp_looper = task.LoopingCall(self.broadcast_timestamp_update)
             self.timestamp_looper.start(0.025)
 
@@ -733,19 +737,25 @@ class MsuClient(MsuClientBase, Protocol):
 
             packet_clean = self.unescape_packet(packet)
 
-            # Verify packet
-            checksum_packet = int.from_bytes(packet_clean[-3:-1], 'little')
-            packet_data = packet_clean[1:-3]
-            checksum = calc_crc16(packet_clean[1:-3])
-            if checksum != checksum_packet:
-                print("Invalid checksum? %04x vs %04x" % (checksum, checksum_packet))
-                hexdump.hexdump(packet_clean)
-                # exit(1)
+            if len(packet_clean) < 6:
+                # This isn't a valid packet
+                # TODO: Add some message here
+                pass
 
             else:
-                # print("Checksum good")
+                # Verify packet
+                checksum_packet = int.from_bytes(packet_clean[-3:-1], 'little')
+                packet_data = packet_clean[1:-3]
+                checksum = calc_crc16(packet_clean[1:-3])
+                if checksum != checksum_packet:
+                    print("Invalid checksum? %04x vs %04x from device %d" % (checksum, checksum_packet, self.client_id))
+                    hexdump.hexdump(packet)
+                    # exit(1)
 
-                self.packets.append(packet_clean)
+                else:
+                    # print("Checksum good")
+
+                    self.packets.append(packet_clean)
 
             self.packet_input_buffers.remove(packet)
 
