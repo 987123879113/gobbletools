@@ -10,6 +10,8 @@ func main() {
 	sessionUnitClient := NewSessionUnitClient(&brain)
 	brain.RegisterSessionUnitClient(&sessionUnitClient)
 
+	go sessionUnitClient.BroadcastTimestamp()
+
 	ln, err := net.Listen("tcp", ":8001")
 	if err != nil {
 		panic(err)

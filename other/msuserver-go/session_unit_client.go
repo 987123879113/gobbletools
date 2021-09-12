@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"log"
+	"time"
 )
 
 type opcodeFn func(*SessionUnitClient, *GameClient, []byte) ([]PacketResponse, int, error)
@@ -13,6 +15,9 @@ type SessionUnitClient struct {
 
 	ClientID   int
 	ClientName []byte
+
+	isSongPlaying bool
+	songTimestamp uint32
 }
 
 func NewSessionUnitClient(brain *MsuBrain) SessionUnitClient {
@@ -42,6 +47,35 @@ func NewSessionUnitClient(brain *MsuBrain) SessionUnitClient {
 	}
 
 	return s
+}
+
+func (c *SessionUnitClient) BroadcastTimestamp() {
+	for {
+		if c.isSongPlaying {
+			for i := 0; i < len(c.brain.RegisteredClients); i++ {
+				client := c.brain.RegisteredClients[i]
+
+				if client == nil {
+					continue
+				}
+
+				var packet PacketResponse
+				b := make([]byte, 4)
+				binary.LittleEndian.PutUint32(b, c.songTimestamp)
+				if c.songTimestamp > 0xffffff {
+					packet = PacketResponse{0x46, b}
+				} else {
+					packet = PacketResponse{0x4e, b[:3]}
+				}
+
+				client.SendData(c.prepareResponse(client, packet.ToBytes()))
+			}
+
+			c.songTimestamp += 750 // TODO: Send real timestamp
+		}
+
+		time.Sleep(time.Second / 40)
+	}
 }
 
 func (c *SessionUnitClient) BroadcastPacket(packet PacketResponse) {
@@ -291,7 +325,16 @@ func opcode_4c(c *SessionUnitClient, targetClient *GameClient, inputPacket []byt
 	// Will always return 1
 
 	// param1 := inputPacket[0] & 3
-	// param2 := inputPacket[0] >> 2
+	param2 := inputPacket[0] >> 2
+
+	c.songTimestamp = 0
+	if param2 == 2 {
+		// Play song??
+		c.isSongPlaying = true
+	} else if param2 == 0 {
+		// Stop song??
+		c.isSongPlaying = false
+	}
 
 	return []PacketResponse{
 		{0x4d, []byte{0x01}},
