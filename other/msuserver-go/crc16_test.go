@@ -1,0 +1,20 @@
+package main
+
+import "testing"
+
+func Test_calc_crc16(t *testing.T) {
+	tests := []struct {
+		data []byte
+		want uint16
+	}{
+		{[]byte{0x01}, 0xe1f1},
+		{[]byte{0x02, 0x02}, 0x1fe5},
+		{[]byte{0x03, 0x03, 0x03}, 0x315b},
+		{[]byte{0x0f, 0x01, 0x02, 0x0a, 0x47, 0x43, 0x44, 0x34, 0x30, 0x4a, 0x41, 0x41, 0x11, 0x01}, 0xc8d5},
+	}
+	for _, tt := range tests {
+		if got := calc_crc16(tt.data); got != tt.want {
+			t.Errorf("calc_crc16() = %v, want %v", got, tt.want)
+		}
+	}
+}
