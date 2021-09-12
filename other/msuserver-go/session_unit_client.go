@@ -16,8 +16,7 @@ type SessionUnitClient struct {
 	ClientID   int
 	ClientName []byte
 
-	isSongPlaying bool
-	songTimestamp uint32
+	audioPlayer *AudioPlayer
 }
 
 func NewSessionUnitClient(brain *MsuBrain) SessionUnitClient {
@@ -51,7 +50,7 @@ func NewSessionUnitClient(brain *MsuBrain) SessionUnitClient {
 
 func (c *SessionUnitClient) BroadcastTimestamp() {
 	for {
-		if c.isSongPlaying {
+		if c.audioPlayer != nil && c.audioPlayer.player.IsPlaying() {
 			for i := 0; i < len(c.brain.RegisteredClients); i++ {
 				client := c.brain.RegisteredClients[i]
 
@@ -59,10 +58,14 @@ func (c *SessionUnitClient) BroadcastTimestamp() {
 					continue
 				}
 
+				timestamp := c.audioPlayer.GetPosition()
+
+				log.Printf("Timestamp: %d\n", timestamp)
+
 				var packet PacketResponse
 				b := make([]byte, 4)
-				binary.LittleEndian.PutUint32(b, c.songTimestamp)
-				if c.songTimestamp > 0xffffff {
+				binary.LittleEndian.PutUint32(b, timestamp)
+				if timestamp > 0xffffff {
 					packet = PacketResponse{0x46, b}
 				} else {
 					packet = PacketResponse{0x4e, b[:3]}
@@ -70,11 +73,9 @@ func (c *SessionUnitClient) BroadcastTimestamp() {
 
 				client.SendData(c.prepareResponse(client, packet.ToBytes()))
 			}
-
-			c.songTimestamp += 750 // TODO: Send real timestamp
 		}
 
-		time.Sleep(time.Second / 40)
+		time.Sleep(time.Second / 30)
 	}
 }
 
@@ -250,10 +251,23 @@ func opcodeLoadFile(c *SessionUnitClient, targetClient *GameClient, inputPacket 
 	// MSU Response: 80001804
 	// DM10 Handler: 80065f58
 	filenameLen := int(inputPacket[0])
-	filename := inputPacket[1 : 1+filenameLen]
-	log.Printf("Load file:\n%s\n", hex.Dump(filename))
+	filename := string(inputPacket[1 : 1+filenameLen])
+
+	log.Printf("Load file:\n%s\n", filename)
+
+	if c.audioPlayer != nil {
+		c.audioPlayer.Stop()
+	}
+
+	c.audioPlayer = NewAudioPlayer(filename)
+
+	result := 1
+	if c.audioPlayer == nil {
+		result = 0
+	}
+
 	return []PacketResponse{
-		{0x41, []byte{0x01}},
+		{0x41, []byte{uint8(result)}},
 	}, 1 + filenameLen, nil
 }
 
@@ -327,13 +341,16 @@ func opcode_4c(c *SessionUnitClient, targetClient *GameClient, inputPacket []byt
 	// param1 := inputPacket[0] & 3
 	param2 := inputPacket[0] >> 2
 
-	c.songTimestamp = 0
 	if param2 == 2 {
 		// Play song??
-		c.isSongPlaying = true
+		if c.audioPlayer != nil {
+			c.audioPlayer.Start()
+		}
 	} else if param2 == 0 {
 		// Stop song??
-		c.isSongPlaying = false
+		if c.audioPlayer != nil {
+			c.audioPlayer.Stop()
+		}
 	}
 
 	return []PacketResponse{
