@@ -34,16 +34,19 @@ func NewAudioPlayer(filename string) *AudioPlayer {
 	}
 }
 
-func (c *AudioPlayer) Start() {
+func (c *AudioPlayer) Start(waitTime time.Duration) {
 	if c.player != nil {
-		c.player.Reset()
-		c.startTime = time.Now()
-		c.player.Play()
+		go func() {
+			c.player.Reset()
+			c.startTime = time.Now()
+			time.Sleep(waitTime)
+			c.player.Play()
+		}()
 	}
 }
 
 func (c *AudioPlayer) Stop() {
-	if c.player.IsPlaying() {
+	if c.player != nil {
 		c.context.Suspend()
 	}
 }

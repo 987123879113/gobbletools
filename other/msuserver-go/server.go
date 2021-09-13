@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	log.SetFlags(log.LstdFlags | log.Lmicroseconds)
+	log.SetFlags(log.Lmicroseconds)
 	brain := NewMsuBrain()
 	sessionUnitClient := NewSessionUnitClient(&brain)
 	brain.RegisterSessionUnitClient(&sessionUnitClient)

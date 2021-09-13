@@ -75,7 +75,7 @@ func (c *SessionUnitClient) BroadcastTimestamp() {
 			}
 		}
 
-		time.Sleep(time.Second / 30)
+		time.Sleep(time.Second / (44100 / 1500))
 	}
 }
 
@@ -253,7 +253,7 @@ func opcodeLoadFile(c *SessionUnitClient, targetClient *GameClient, inputPacket 
 	filenameLen := int(inputPacket[0])
 	filename := string(inputPacket[1 : 1+filenameLen])
 
-	log.Printf("Load file:\n%s\n", filename)
+	log.Printf("Load file: \"%s\"\n", filename)
 
 	if c.audioPlayer != nil {
 		c.audioPlayer.Stop()
@@ -261,9 +261,9 @@ func opcodeLoadFile(c *SessionUnitClient, targetClient *GameClient, inputPacket 
 
 	c.audioPlayer = NewAudioPlayer(filename)
 
-	result := 1
-	if c.audioPlayer == nil {
-		result = 0
+	result := 0
+	if c.audioPlayer != nil {
+		result = 1
 	}
 
 	return []PacketResponse{
@@ -339,22 +339,10 @@ func opcode_4c(c *SessionUnitClient, targetClient *GameClient, inputPacket []byt
 	// Will always return 1
 
 	// param1 := inputPacket[0] & 3
-	param2 := inputPacket[0] >> 2
-
-	if param2 == 2 {
-		// Play song??
-		if c.audioPlayer != nil {
-			c.audioPlayer.Start()
-		}
-	} else if param2 == 0 {
-		// Stop song??
-		if c.audioPlayer != nil {
-			c.audioPlayer.Stop()
-		}
-	}
+	// param2 := inputPacket[0] >> 2
 
 	return []PacketResponse{
-		{0x4d, []byte{0x01}},
+		{0x4d, []byte{1}},
 	}, 1, nil
 }
 
@@ -381,11 +369,30 @@ func opcode_50(c *SessionUnitClient, targetClient *GameClient, inputPacket []byt
 	// param1 == 1 is start song?
 	// param1 == 0 is stop song?
 
+	if inputPacket[0] == 2 && inputPacket[1] == 0 && inputPacket[2] == 8 {
+		// Does this start audio or unmute or something?
+		if c.audioPlayer != nil {
+			log.Println("Starting audio")
+			c.audioPlayer.Start(time.Second / 8) // Hack
+		} else {
+			log.Println("Failed to stop audio! No audio player!")
+		}
+	} else if inputPacket[0] == 0 && inputPacket[1] == 0 && inputPacket[2] == 1 {
+		// Stop song??
+		if c.audioPlayer != nil {
+			log.Println("Stopping audio")
+			c.audioPlayer.Stop()
+		} else {
+			log.Println("Failed to stop audio! No audio player!")
+		}
+	}
+
 	// (2 if param8 == 2 else 1) == 1
 	result := 1
 	if param8 == 2 {
 		result = 0
 	}
+
 	return []PacketResponse{
 		{0x51, []byte{byte(result)}},
 	}, 3, nil
