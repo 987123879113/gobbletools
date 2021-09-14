@@ -1,0 +1,9 @@
+{
+  "waifu2x_path": "C:\\Users\\Owner\\AppData\\Local\\video2x\\waifu2x-caffe\\waifu2x-caffe-cui.exe",
+  "ffmpeg_path": "C:\\Users\\Owner\\AppData\\Local\\video2x\\ffmpeg-4.1-win64-static\\bin",
+  "ffmpeg_arguments": [],
+  "ffmpeg_hwaccel": "cuda",
+  "extracted_frames": false,
+  "upscaled_frames": false,
+  "preserve_frames": false
+}

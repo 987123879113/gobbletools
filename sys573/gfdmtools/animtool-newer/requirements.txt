@@ -1,0 +1,5 @@
+hexdump==3.3
+imageio==2.3.0
+numpy==1.16.0rc1+mkl
+Pillow==6.2.0
+tqdm==4.28.1
