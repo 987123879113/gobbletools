@@ -191,8 +191,8 @@ if __name__ == "__main__":
         # Not sure how this really works
         for offset in [0x20]:
             infile.seek(offset)
-            sysfile_offset = int.from_bytes(infile.read(4), byteorder="little")
-            sysfile_offset2 = int.from_bytes(infile.read(4), byteorder="little")
+            sysfile_offset = int.from_bytes(infile.read(4), byteorder="big") * 0x100
+            sysfile_offset2 = int.from_bytes(infile.read(4), byteorder="big") * 0x100
 
             infile.seek(offset + 0x10)
             sysfile_size = int.from_bytes(infile.read(4), byteorder="big")
