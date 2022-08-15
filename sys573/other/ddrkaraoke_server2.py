@@ -2,6 +2,8 @@
 # Then spam s2 until you hear "are you ready?"
 # Then go to server1 and run "play bpm beats filename.mp3" to play the song
 
+import random
+
 from socket import *
 
 s = socket(AF_INET, SOCK_STREAM)
@@ -14,9 +16,10 @@ while True:
     ch = input("Enter command (s, sn (num), s2): ").strip().lower()
 
     if ch == "s":
-        request_no_upper = "1234"
-        request_no_lower = "1234"
-        conn.sendall(b"~\x42\x00\x00\x15\x00\x07\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" + b"\x02\x02\x00\x01\x01")
+        request_no_str = ch[2:].strip()
+        request_no = [random.randint(0, 0xffff), random.randint(0, 0xff)]
+        request_no_bytes = int.to_bytes(request_no[0], 2, 'big') + int.to_bytes(request_no[1], 1, 'big')
+        conn.sendall(b"~\x42\x00\x00\x15\x00" + request_no_bytes + b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" + b"\x02\x02\x00\x01\x01")
 
     elif ch.startswith("sn "):
         # Request a specific song
