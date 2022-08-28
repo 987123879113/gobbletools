@@ -1,0 +1,560 @@
+[
+    {
+        "song_id": 0,
+        "title": "ai no tameni.",
+        "difficulty": 2,
+        "songwheel_title_file_id": 50,
+        "songwheel_genre_graphic_file_id": 77,
+        "songwheel_title_graphic_file_id2": 50,
+        "song_title_graphic_file_id": 88,
+        "bgm_file_id": 346,
+        "preview_file_id": 347,
+        "se_archive_file_id": 388,
+        "chart_file_id": 348,
+        "dj_voice_file_ids": [
+            349,
+            350,
+            351
+        ]
+    },
+    {
+        "song_id": 1,
+        "title": "amairo no kami no otome",
+        "difficulty": 2,
+        "songwheel_title_file_id": 48,
+        "songwheel_genre_graphic_file_id": 76,
+        "songwheel_title_graphic_file_id2": 48,
+        "song_title_graphic_file_id": 103,
+        "bgm_file_id": 364,
+        "preview_file_id": 365,
+        "se_archive_file_id": 388,
+        "chart_file_id": 366,
+        "dj_voice_file_ids": [
+            367,
+            369,
+            -1
+        ]
+    },
+    {
+        "song_id": 2,
+        "title": "Raindrops keep fallin' on my head",
+        "difficulty": 1,
+        "songwheel_title_file_id": 45,
+        "songwheel_genre_graphic_file_id": 72,
+        "songwheel_title_graphic_file_id2": 50,
+        "song_title_graphic_file_id": 106,
+        "bgm_file_id": 304,
+        "preview_file_id": 305,
+        "se_archive_file_id": 388,
+        "chart_file_id": 306,
+        "dj_voice_file_ids": [
+            307,
+            308,
+            309
+        ]
+    },
+    {
+        "song_id": 3,
+        "title": "anpanman no march",
+        "difficulty": 1,
+        "songwheel_title_file_id": 32,
+        "songwheel_genre_graphic_file_id": 59,
+        "songwheel_title_graphic_file_id2": 153,
+        "song_title_graphic_file_id": 89,
+        "bgm_file_id": 316,
+        "preview_file_id": 317,
+        "se_archive_file_id": 388,
+        "chart_file_id": 318,
+        "dj_voice_file_ids": [
+            319,
+            320,
+            321
+        ]
+    },
+    {
+        "song_id": 4,
+        "title": "urusei yatura",
+        "difficulty": 3,
+        "songwheel_title_file_id": 31,
+        "songwheel_genre_graphic_file_id": 58,
+        "songwheel_title_graphic_file_id2": 152,
+        "song_title_graphic_file_id": 107,
+        "bgm_file_id": 262,
+        "preview_file_id": 263,
+        "se_archive_file_id": 388,
+        "chart_file_id": 264,
+        "dj_voice_file_ids": [
+            265,
+            266,
+            267
+        ]
+    },
+    {
+        "song_id": 5,
+        "title": "Everyday at the bus stop",
+        "difficulty": 2,
+        "songwheel_title_file_id": 33,
+        "songwheel_genre_graphic_file_id": 60,
+        "songwheel_title_graphic_file_id2": 154,
+        "song_title_graphic_file_id": 93,
+        "bgm_file_id": 250,
+        "preview_file_id": 251,
+        "se_archive_file_id": 388,
+        "chart_file_id": 252,
+        "dj_voice_file_ids": [
+            253,
+            254,
+            255
+        ]
+    },
+    {
+        "song_id": 6,
+        "title": "Centerfold",
+        "difficulty": 2,
+        "songwheel_title_file_id": 42,
+        "songwheel_genre_graphic_file_id": 69,
+        "songwheel_title_graphic_file_id2": 154,
+        "song_title_graphic_file_id": 104,
+        "bgm_file_id": 298,
+        "preview_file_id": 299,
+        "se_archive_file_id": 388,
+        "chart_file_id": 300,
+        "dj_voice_file_ids": [
+            301,
+            302,
+            303
+        ]
+    },
+    {
+        "song_id": 7,
+        "title": "odoru ponnpokorin",
+        "difficulty": 1,
+        "songwheel_title_file_id": 27,
+        "songwheel_genre_graphic_file_id": 54,
+        "songwheel_title_graphic_file_id2": 154,
+        "song_title_graphic_file_id": 105,
+        "bgm_file_id": 370,
+        "preview_file_id": 371,
+        "se_archive_file_id": 388,
+        "chart_file_id": 372,
+        "dj_voice_file_ids": [
+            373,
+            374,
+            375
+        ]
+    },
+    {
+        "song_id": 8,
+        "title": "gakuen tengoku",
+        "difficulty": 2,
+        "songwheel_title_file_id": 35,
+        "songwheel_genre_graphic_file_id": 62,
+        "songwheel_title_graphic_file_id2": 35,
+        "song_title_graphic_file_id": 94,
+        "bgm_file_id": 268,
+        "preview_file_id": 269,
+        "se_archive_file_id": 388,
+        "chart_file_id": 270,
+        "dj_voice_file_ids": [
+            271,
+            272,
+            273
+        ]
+    },
+    {
+        "song_id": 9,
+        "title": "cutyhoney",
+        "difficulty": 2,
+        "songwheel_title_file_id": 36,
+        "songwheel_genre_graphic_file_id": 63,
+        "songwheel_title_graphic_file_id2": 157,
+        "song_title_graphic_file_id": 92,
+        "bgm_file_id": 256,
+        "preview_file_id": 257,
+        "se_archive_file_id": 388,
+        "chart_file_id": 258,
+        "dj_voice_file_ids": [
+            259,
+            260,
+            261
+        ]
+    },
+    {
+        "song_id": 10,
+        "title": "koi to machingun",
+        "difficulty": 2,
+        "songwheel_title_file_id": 37,
+        "songwheel_genre_graphic_file_id": 64,
+        "songwheel_title_graphic_file_id2": 37,
+        "song_title_graphic_file_id": 97,
+        "bgm_file_id": 274,
+        "preview_file_id": 275,
+        "se_archive_file_id": 388,
+        "chart_file_id": 276,
+        "dj_voice_file_ids": [
+            277,
+            278,
+            279
+        ]
+    },
+    {
+        "song_id": 11,
+        "title": "Sunshine Dance",
+        "difficulty": 3,
+        "songwheel_title_file_id": 43,
+        "songwheel_genre_graphic_file_id": 70,
+        "songwheel_title_graphic_file_id2": 29,
+        "song_title_graphic_file_id": 112,
+        "bgm_file_id": 334,
+        "preview_file_id": 335,
+        "se_archive_file_id": 388,
+        "chart_file_id": 336,
+        "dj_voice_file_ids": [
+            337,
+            338,
+            339
+        ]
+    },
+    {
+        "song_id": 12,
+        "title": "Tout,tout pour ma Cherie",
+        "difficulty": 3,
+        "songwheel_title_file_id": 39,
+        "songwheel_genre_graphic_file_id": 66,
+        "songwheel_title_graphic_file_id2": 39,
+        "song_title_graphic_file_id": 90,
+        "bgm_file_id": 280,
+        "preview_file_id": 281,
+        "se_archive_file_id": 388,
+        "chart_file_id": 282,
+        "dj_voice_file_ids": [
+            283,
+            284,
+            285
+        ]
+    },
+    {
+        "song_id": 13,
+        "title": "Shanghai Honey",
+        "difficulty": 2,
+        "songwheel_title_file_id": 29,
+        "songwheel_genre_graphic_file_id": 56,
+        "songwheel_title_graphic_file_id2": 29,
+        "song_title_graphic_file_id": 110,
+        "bgm_file_id": 352,
+        "preview_file_id": 353,
+        "se_archive_file_id": 388,
+        "chart_file_id": 354,
+        "dj_voice_file_ids": [
+            355,
+            356,
+            357
+        ]
+    },
+    {
+        "song_id": 14,
+        "title": "su-dara busi",
+        "difficulty": 2,
+        "songwheel_title_file_id": 41,
+        "songwheel_genre_graphic_file_id": 68,
+        "songwheel_title_graphic_file_id2": 26,
+        "song_title_graphic_file_id": 111,
+        "bgm_file_id": 292,
+        "preview_file_id": 293,
+        "se_archive_file_id": 388,
+        "chart_file_id": 294,
+        "dj_voice_file_ids": [
+            295,
+            296,
+            -1
+        ]
+    },
+    {
+        "song_id": 15,
+        "title": "When The Saints Go Marching In",
+        "difficulty": 2,
+        "songwheel_title_file_id": 44,
+        "songwheel_genre_graphic_file_id": 71,
+        "songwheel_title_graphic_file_id2": 26,
+        "song_title_graphic_file_id": 109,
+        "bgm_file_id": 322,
+        "preview_file_id": 323,
+        "se_archive_file_id": 388,
+        "chart_file_id": 324,
+        "dj_voice_file_ids": [
+            325,
+            326,
+            327
+        ]
+    },
+    {
+        "song_id": 16,
+        "title": "Touch",
+        "difficulty": 3,
+        "songwheel_title_file_id": 38,
+        "songwheel_genre_graphic_file_id": 65,
+        "songwheel_title_graphic_file_id2": 155,
+        "song_title_graphic_file_id": 113,
+        "bgm_file_id": 286,
+        "preview_file_id": 287,
+        "se_archive_file_id": 388,
+        "chart_file_id": 288,
+        "dj_voice_file_ids": [
+            289,
+            290,
+            291
+        ]
+    },
+    {
+        "song_id": 17,
+        "title": "Choo Choo Train",
+        "difficulty": 2,
+        "songwheel_title_file_id": 34,
+        "songwheel_genre_graphic_file_id": 61,
+        "songwheel_title_graphic_file_id2": 155,
+        "song_title_graphic_file_id": 91,
+        "bgm_file_id": 244,
+        "preview_file_id": 245,
+        "se_archive_file_id": 388,
+        "chart_file_id": 246,
+        "dj_voice_file_ids": [
+            247,
+            248,
+            249
+        ]
+    },
+    {
+        "song_id": 18,
+        "title": "Draemon no uta",
+        "difficulty": 1,
+        "songwheel_title_file_id": 47,
+        "songwheel_genre_graphic_file_id": 74,
+        "songwheel_title_graphic_file_id2": 47,
+        "song_title_graphic_file_id": 101,
+        "bgm_file_id": 376,
+        "preview_file_id": 377,
+        "se_archive_file_id": 388,
+        "chart_file_id": 378,
+        "dj_voice_file_ids": [
+            379,
+            380,
+            381
+        ]
+    },
+    {
+        "song_id": 19,
+        "title": "natsuiro",
+        "difficulty": 2,
+        "songwheel_title_file_id": 46,
+        "songwheel_genre_graphic_file_id": 73,
+        "songwheel_title_graphic_file_id2": 46,
+        "song_title_graphic_file_id": 100,
+        "bgm_file_id": 340,
+        "preview_file_id": 341,
+        "se_archive_file_id": 388,
+        "chart_file_id": 342,
+        "dj_voice_file_ids": [
+            343,
+            344,
+            345
+        ]
+    },
+    {
+        "song_id": 20,
+        "title": "Happy days",
+        "difficulty": 3,
+        "songwheel_title_file_id": 30,
+        "songwheel_genre_graphic_file_id": 57,
+        "songwheel_title_graphic_file_id2": 26,
+        "song_title_graphic_file_id": 95,
+        "bgm_file_id": 310,
+        "preview_file_id": 311,
+        "se_archive_file_id": 388,
+        "chart_file_id": 312,
+        "dj_voice_file_ids": [
+            313,
+            314,
+            315
+        ]
+    },
+    {
+        "song_id": 21,
+        "title": "My sweet darlin",
+        "difficulty": 2,
+        "songwheel_title_file_id": 51,
+        "songwheel_genre_graphic_file_id": 78,
+        "songwheel_title_graphic_file_id2": 153,
+        "song_title_graphic_file_id": 99,
+        "bgm_file_id": 358,
+        "preview_file_id": 359,
+        "se_archive_file_id": 388,
+        "chart_file_id": 360,
+        "dj_voice_file_ids": [
+            361,
+            362,
+            363
+        ]
+    },
+    {
+        "song_id": 22,
+        "title": "moonlight densetu",
+        "difficulty": 1,
+        "songwheel_title_file_id": 49,
+        "songwheel_genre_graphic_file_id": 75,
+        "songwheel_title_graphic_file_id2": 49,
+        "song_title_graphic_file_id": 102,
+        "bgm_file_id": 382,
+        "preview_file_id": 383,
+        "se_archive_file_id": 388,
+        "chart_file_id": 384,
+        "dj_voice_file_ids": [
+            385,
+            386,
+            387
+        ]
+    },
+    {
+        "song_id": 23,
+        "title": "wakare no kyoku",
+        "difficulty": 1,
+        "songwheel_title_file_id": 52,
+        "songwheel_genre_graphic_file_id": 79,
+        "songwheel_title_graphic_file_id2": 49,
+        "song_title_graphic_file_id": 115,
+        "bgm_file_id": 328,
+        "preview_file_id": 329,
+        "se_archive_file_id": 388,
+        "chart_file_id": 330,
+        "dj_voice_file_ids": [
+            331,
+            332,
+            333
+        ]
+    },
+    {
+        "song_id": 24,
+        "title": "how to -test",
+        "difficulty": 3,
+        "songwheel_title_file_id": 40,
+        "songwheel_genre_graphic_file_id": 67,
+        "songwheel_title_graphic_file_id2": 26,
+        "song_title_graphic_file_id": 98,
+        "bgm_file_id": 234,
+        "preview_file_id": 251,
+        "se_archive_file_id": 388,
+        "chart_file_id": 252,
+        "dj_voice_file_ids": [
+            253,
+            253,
+            253
+        ]
+    },
+    {
+        "song_id": 25,
+        "title": "choo",
+        "difficulty": 1,
+        "songwheel_title_file_id": 34,
+        "songwheel_genre_graphic_file_id": 61,
+        "songwheel_title_graphic_file_id2": 155,
+        "song_title_graphic_file_id": 91,
+        "bgm_file_id": 244,
+        "preview_file_id": 245,
+        "se_archive_file_id": 388,
+        "chart_file_id": 246,
+        "dj_voice_file_ids": [
+            247,
+            247,
+            247
+        ]
+    },
+    {
+        "song_id": 26,
+        "title": "everyday at the bus stop",
+        "difficulty": 1,
+        "songwheel_title_file_id": 33,
+        "songwheel_genre_graphic_file_id": 60,
+        "songwheel_title_graphic_file_id2": 154,
+        "song_title_graphic_file_id": 93,
+        "bgm_file_id": 250,
+        "preview_file_id": 251,
+        "se_archive_file_id": 388,
+        "chart_file_id": 252,
+        "dj_voice_file_ids": [
+            253,
+            253,
+            253
+        ]
+    },
+    {
+        "song_id": 27,
+        "title": "machinegun",
+        "difficulty": 3,
+        "songwheel_title_file_id": 37,
+        "songwheel_genre_graphic_file_id": 64,
+        "songwheel_title_graphic_file_id2": 37,
+        "song_title_graphic_file_id": 37,
+        "bgm_file_id": 274,
+        "preview_file_id": 275,
+        "se_archive_file_id": 388,
+        "chart_file_id": 276,
+        "dj_voice_file_ids": [
+            277,
+            277,
+            277
+        ]
+    },
+    {
+        "song_id": 28,
+        "title": "shelley",
+        "difficulty": 2,
+        "songwheel_title_file_id": 39,
+        "songwheel_genre_graphic_file_id": 66,
+        "songwheel_title_graphic_file_id2": 39,
+        "song_title_graphic_file_id": 90,
+        "bgm_file_id": 280,
+        "preview_file_id": 281,
+        "se_archive_file_id": 388,
+        "chart_file_id": 282,
+        "dj_voice_file_ids": [
+            283,
+            283,
+            283
+        ]
+    },
+    {
+        "song_id": 29,
+        "title": "how to -test",
+        "difficulty": 3,
+        "songwheel_title_file_id": 50,
+        "songwheel_genre_graphic_file_id": 77,
+        "songwheel_title_graphic_file_id2": 26,
+        "song_title_graphic_file_id": 96,
+        "bgm_file_id": 234,
+        "preview_file_id": 251,
+        "se_archive_file_id": 388,
+        "chart_file_id": 252,
+        "dj_voice_file_ids": [
+            253,
+            253,
+            253
+        ]
+    },
+    {
+        "song_id": 30,
+        "title": "how to",
+        "difficulty": 3,
+        "songwheel_title_file_id": 50,
+        "songwheel_genre_graphic_file_id": 77,
+        "songwheel_title_graphic_file_id2": 26,
+        "song_title_graphic_file_id": 96,
+        "bgm_file_id": 239,
+        "preview_file_id": 251,
+        "se_archive_file_id": 388,
+        "chart_file_id": 241,
+        "dj_voice_file_ids": [
+            -1,
+            -1,
+            -1
+        ]
+    }
+]
