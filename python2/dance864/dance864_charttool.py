@@ -92,14 +92,38 @@ def convert_chart_to_sm(filename, songlist_entry):
 
     bpms = {}
     beat_lookup_by_timestamp = {}
-    last_bpm = None
-    last_timestamp = 0
+    last_bpm = 0
     cur_bpm = 0
-    last_measure = 0
+    last_beat = 0
+    beat_vals = [x for x in events if x['event'] == "beat" or x['event'] == "end"]
 
     for event_idx, event in enumerate(events):
+        if event['event'] == "beat":
+            # Find next beat or end event
+            next_event = None
+
+            for event2 in events[event_idx+1:]:
+                if event2['event'] in ["beat", "end"]:
+                    next_event = event2
+                    break
+
+            assert(next_event is not None)
+
+            beat_count = beat_vals.index(event)
+            next_beat_count = beat_vals.index(next_event)
+
+            if next_beat_count > last_beat:
+                last_beat = next_beat_count
+
+            cur_bpm = 60000 / (next_event['timestamp'] - event['timestamp'])
+            if cur_bpm != last_bpm:
+                bpms[beat_count] = cur_bpm
+                last_bpm = cur_bpm
+
+    last_measure = [x['value'] for x in events if x['event'] == "measure"][-1] + 1
+    for event_idx, event in enumerate(events):
         if event['event'] == "measure":
-            # Find next measure or end event
+            # Find next beat or end event
             next_event = None
 
             for event2 in events[event_idx+1:]:
@@ -107,23 +131,9 @@ def convert_chart_to_sm(filename, songlist_entry):
                     next_event = event2
                     break
 
-            assert(next_event is not None)
-
-            measure_count = event['value']
-            next_measure_count = next_event['value'] if next_event['event'] == "measure" else measure_count + 1
-            beat_count = len([x for x in events if x['event'] == "beat" and x['timestamp'] >= event['timestamp'] and x['timestamp'] < next_event['timestamp']])
-
-            if next_measure_count > last_measure:
-                last_measure = next_measure_count
-
-            if beat_count != 0:
-                cur_bpm = 60000 / (next_event['timestamp'] - event['timestamp']) * beat_count
-
-                bpms[measure_count * beat_count] = cur_bpm
-
             for i in range(0, BEAT_QUANT):
                 k = event['timestamp'] + (((next_event['timestamp'] - event['timestamp']) / BEAT_QUANT) * i)
-                beat_lookup_by_timestamp[k] = (measure_count, i)
+                beat_lookup_by_timestamp[k] = (event['value'], i)
 
     note_events_by_beat = []
     for _ in range(5):
