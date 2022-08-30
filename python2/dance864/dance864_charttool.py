@@ -103,9 +103,12 @@ def convert_chart_to_sm(filename, songlist_entry):
             next_event = None
 
             for event2 in events[event_idx+1:]:
-                if event2['event'] in ["beat", "end"]:
+                if event2['event'] in ["beat"]:
                     next_event = event2
                     break
+
+            if next_event['event'] == "end":
+                continue
 
             assert(next_event is not None)
 
