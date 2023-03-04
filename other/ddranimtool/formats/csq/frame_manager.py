@@ -18,6 +18,9 @@ class FrameManager:
         self.raw_video_folder = os.path.abspath(raw_video_folder) if raw_video_folder else ""
         self.jpsxdec_jar_path = os.path.abspath(jpsxdec_jar_path) if jpsxdec_jar_path is not None else None
 
+        self.temp_dir = os.path.abspath(tempfile._get_default_tempdir())
+        os.makedirs(self.temp_dir, exist_ok=True)
+
     def dump_raw_frame(self, chunk, output_filename):
         JPSXDEC_COMMAND = "java -jar \"%s\" -f \"{0}\" -static bs -dim {1}x{2} -fmt png -quality psx" % self.jpsxdec_jar_path
 
@@ -25,16 +28,22 @@ class FrameManager:
         # so change directories to the temporary folder until the end of the function and then restore the old directory
         cwd = os.getcwd()
 
-        with tempfile.NamedTemporaryFile(mode="wb", suffix=".bin") as raw_frame_file:
-            os.chdir(os.path.dirname(raw_frame_file.name))
-
+        # Windows doesn't like
+        temp_filename = os.path.join(self.temp_dir, next(tempfile._get_candidate_names())) + ".bin"
+        with open(temp_filename, "wb") as raw_frame_file:
             raw_frame_file.write(chunk)
-            converted_frame_path = os.path.splitext(raw_frame_file.name)[0] + ".png"
 
-            cmd = JPSXDEC_COMMAND.format(raw_frame_file.name, 304, 176)
-            os.system(cmd)
+        os.chdir(os.path.dirname(temp_filename))
 
-            shutil.move(converted_frame_path, output_filename)
+        converted_frame_path = os.path.splitext(temp_filename)[0] + ".png"
+
+        cmd = JPSXDEC_COMMAND.format(os.path.basename(temp_filename), 304, 176)
+        os.system(cmd)
+
+        shutil.move(converted_frame_path, output_filename)
+
+        if os.path.exists(temp_filename):
+            os.unlink(temp_filename)
 
         os.chdir(cwd)
 
