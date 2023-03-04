@@ -30,10 +30,10 @@ chdman extractcd -i game.chd -o game.cue
 ```sh
 python3 sys573tool.py --mode dump --input game_cd_contents --output game_data_extracted
 ```
-This gives you the mdb folder, located at `game_data_extracted/0/mdb`, and the common movies, located at `game_data_extracted/0/movies/common`.
+This gives you the mdb folder, located at `game_data_extracted/0/data/mdb`, and the common movies, located at `game_data_extracted/0/data/movies/common`.
 4. Grab required data from game_data_extracted:
-- Copy the files from `game_data_extracted/0/movies/common` into `game_cd_contents/MOV`.
-- (DDR Extreme only) Copy the files from `game_data_extracted/0/mp3/enc` into `game_cd_contents/DAT`
+- Copy the files from `game_data_extracted/0/data/movies/common` into `game_cd_contents/MOV`.
+- (DDR Extreme only) Copy the files from `game_data_extracted/0/data/mp3/enc` into `game_cd_contents/DAT`
 5. Decrypt all of the MP3 .DATs using [py573a](https://github.com/987123879113/gobbletools/tree/master/sys573/py573a)
 ```sh
 (Linux/macOS)
@@ -54,7 +54,7 @@ python3 video_frame_cacher.py -i game_cd_contents/MOV -o frame_cache_folder_name
 ```
 ### How to render video using anim_renderer.py
 ```sh
-python3 anim_renderer.py -m game_data_extracted/0/mdb -s game_cd_contents/DAT -c frame_cache_folder_name -i song_id
+python3 anim_renderer.py -m game_data_extracted/0/data/mdb -s game_cd_contents/DAT -c frame_cache_folder_name -i song_id
 ```
 
 Replace the `song_id` value at the end with the 4/5 letter song ID for the song you wish to render. You can reference [this list](https://zenius-i-vanisher.com/ddrmasterlist.txt) to easily figure out what the song ID is for a specific song.
