@@ -908,15 +908,24 @@ def dump_data(input_folder, output_folder, candidate_result, main_card_filename=
         data = get_file_data(input_folder, fileinfo, game_key)
 
         try:
+            try_find_ext = output_filename.endswith(".lz") or output_filename.endswith(".lz0")
+
             if output_filename.endswith(".lz"):
                 if files[idx]['flag_comp'] == 0:
                     data = decode_lz(data, len(data))
-                output_filename = output_filename[:-len(".lz")] + ".tim"
+                output_filename = output_filename[:-len(".lz")]
 
             elif output_filename.endswith(".lz0"):
                 if files[idx]['flag_comp'] == 0:
                     data = decode_lz0(data, len(data))
-                output_filename = output_filename[:-len(".lz0")] + ".tim"
+                output_filename = output_filename[:-len(".lz0")]
+
+            if try_find_ext:
+                new_ext = ""
+                if len(data) > 4 and int.from_bytes(data[0:4], 'little') == 0x10:
+                    new_ext = ".tim"
+                if new_ext:
+                    output_filename += new_ext
         except:
             pass
 
