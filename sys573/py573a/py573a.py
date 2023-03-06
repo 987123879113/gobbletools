@@ -250,6 +250,7 @@ def main():
 
     parser.add_argument('--native', help='Native decryption code only', default=False, action='store_true')
     parser.add_argument('--encrypt', help='Encrypt input instead of decrypt (uses 0,0,0 as key)', default=False, action='store_true')
+    parser.add_argument('--no-remove-garbage', help='Output the raw, untouched decrypted file (will include garbage bytes before MP3 data)', default=False, action='store_true')
 
     args = parser.parse_args()
 
@@ -315,6 +316,92 @@ def main():
 
     else:
         output_data = decrypt_ddrsbm_func(data, len(data) // 2, key1)
+
+    if not args.no_remove_garbage:
+        def get_mp3_frame_length(bytes):
+            # Based on mp3info.py
+            BITRATES = [
+                [
+                    # MPEG-2 & 2.5
+                    [0,32,48,56, 64, 80, 96,112,128,144,160,176,192,224,256,None], # Layer 1
+                    [0, 8,16,24, 32, 40, 48, 56, 64, 80, 96,112,128,144,160,None], # Layer 2
+                    [0, 8,16,24, 32, 40, 48, 56, 64, 80, 96,112,128,144,160,None]  # Layer 3
+                ],
+                [
+                    # MPEG-1
+                    [0,32,64,96,128,160,192,224,256,288,320,352,384,416,448,None], # Layer 1
+                    [0,32,48,56, 64, 80, 96,112,128,160,192,224,256,320,384,None], # Layer 2
+                    [0,32,40,48, 56, 64, 80, 96,112,128,160,192,224,256,320,None]  # Layer 3
+                ]
+            ]
+            SAMPLERATES = [
+                [ 11025, 12000,  8000, None], # MPEG-2.5
+                [  None,  None,  None, None], # reserved
+                [ 22050, 24000, 16000, None], # MPEG-2
+                [ 44100, 48000, 32000, None], # MPEG-1
+            ]
+
+            # Frame sync check
+            if bytes[0] != 0xff and ((bytes[1] >> 5) & 0b111) != 0b111:
+                return None
+
+            # Bad emphasis bit
+            if (bytes[3] & 0b11) == 0b10:
+                return None
+
+            mpeg_version = (bytes[1] >> 3) & 0b11
+            layer = (bytes[1] >> 1) & 0b11
+            bitrate = (bytes[2] >> 4) & 0b1111
+            samplerate = (bytes[2] >> 2) & 0b11
+            padding = (bytes[2] >> 1) & 0b1
+
+            if mpeg_version not in [0, 2, 3]:
+                return None
+
+            layer = [None, 3, 2, 1][layer]
+            if layer is None:
+                return None
+
+            bitrate = BITRATES[mpeg_version & 1][layer - 1][bitrate]
+            samplerate = SAMPLERATES[mpeg_version][samplerate]
+
+            if bitrate is None or samplerate is None:
+                return None
+
+            if layer == 3 and mpeg_version == 0 or mpeg_version == 2:
+                samplerate <<= 1
+
+            if layer == 1:
+                framelength = (12000 * bitrate / samplerate + padding) * 4
+
+            else:
+                framelength = 144000 * bitrate / samplerate + padding
+
+            if bitrate == 0:
+                print("WARNING: This tool does not support free bitrate MP3s")
+                return None
+
+            return int(framelength)
+
+
+        for i in range(len(output_data) - 4):
+            frames_synced = 0
+            requested_frames_synced = 10
+
+            # Try to read at least a fixed number MP3 frames before determining it's valid
+            cur_offset = 0
+            while frames_synced < requested_frames_synced:
+                mp3_frame_length = get_mp3_frame_length(output_data[i+cur_offset:i+cur_offset+4])
+                if mp3_frame_length is None:
+                    break
+
+                cur_offset += mp3_frame_length
+                frames_synced += 1
+
+            if frames_synced >= requested_frames_synced:
+                print("Removed %d bytes of garbage from header" % i)
+                output_data = output_data[i:]
+                break
 
     with open(args.output, "wb") as outfile:
         outfile.write(output_data)
