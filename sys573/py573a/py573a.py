@@ -389,9 +389,9 @@ def main():
             requested_frames_synced = 10
 
             # Try to read at least a fixed number MP3 frames before determining it's valid
-            cur_offset = 0
-            while frames_synced < requested_frames_synced:
-                mp3_frame_length = get_mp3_frame_length(output_data[i+cur_offset:i+cur_offset+4])
+            cur_offset = i
+            while frames_synced < requested_frames_synced and cur_offset < len(output_data):
+                mp3_frame_length = get_mp3_frame_length(output_data[cur_offset:cur_offset+4])
                 if mp3_frame_length is None:
                     break
 
