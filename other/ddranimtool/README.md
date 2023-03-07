@@ -25,36 +25,40 @@ Additional, follow the build steps for sys573tool and py573a to get those workin
 ```sh
 chdman extractcd -i game.chd -o game.cue
 ```
+
 2. Extract contents of cue/bin (or your CD image or physical CD) to a separate folder.
+
 3. Use [sys573tool](https://github.com/987123879113/gobbletools/tree/master/sys573/sys573tool) to extract the GAME.DAT and CARD.DAT
 ```sh
 python3 sys573tool.py --mode dump --input game_cd_contents --output game_data_extracted
 ```
 This gives you the mdb folder, located at `game_data_extracted/0/data/mdb`, and the common movies, located at `game_data_extracted/0/data/movies/common`.
+
 4. Grab required data from game_data_extracted:
-- Copy the files from `game_data_extracted/0/data/movies/common` into `game_cd_contents/MOV`.
 - (DDR Extreme only) Copy the files from `game_data_extracted/0/data/mp3/enc` into `game_cd_contents/DAT`
+
 5. Decrypt all of the MP3 .DATs using [py573a](https://github.com/987123879113/gobbletools/tree/master/sys573/py573a)
 ```sh
 (Linux/macOS)
-find game_cd_contents/DAT -type f -iname "*.dat" -exec sh -c 'python3 py573a.py --input "$0" --output "$(echo "$0" | sed "s/\(.*\)\..*/\1/").mp3"' {} \;
+find game_cd_contents/DAT -type f -iname "*.dat" -exec python3 py573a.py --input "{}" \;
 
 (Windows)
-for %s in (game_cd_contents/DAT/*.dat) do python3 py573a.py --input "%s" --output "%~ns.mp3"
+for %s in (game_cd_contents/DAT/*.dat) do python3 py573a.py --input "%s""
 ```
+
 6. (Optional) Prepare video cache. This step may take a significant amount of time so be prepared to wait potentially an hour. Alternatively, the video animation renderer tool will cache the videos it needs on demand if they aren't in the cache already. Letting the tool cache what's needed is recommended if you don't plan on rendering every song.
 ```sh
-python3 video_frame_cacher.py -i game_cd_contents/MOV
+python3 video_frame_cacher.py -i game_cd_contents/MOV -i game_data_extracted/0/data/movies/common
 ```
 Expect a full frame cache for each specific game to be somewhere around 2gb-3gb each.
 
 I would recommend creating a new cache folder for every individual game you want to render so as to not run into issues where a video may have changed in some way between game releases. You can use the `-o frame_cache_folder_name` parameter to specify the output cache folder.
 ```sh
-python3 video_frame_cacher.py -i game_cd_contents/MOV -o frame_cache_folder_name
+python3 video_frame_cacher.py -i game_cd_contents/MOV -i game_data_extracted/0/data/movies/common -o frame_cache_folder_name
 ```
 ### How to render video using anim_renderer.py
 ```sh
-python3 anim_renderer.py -m game_data_extracted/0/data/mdb -s game_cd_contents/DAT -c frame_cache_folder_name -i song_id
+python3 anim_renderer.py -r game_cd_contents/MOV -r game_data_extracted/0/data/movies/common -m game_data_extracted/0/data/mdb -s game_cd_contents/DAT -c frame_cache_folder_name -i song_id
 ```
 
 Replace the `song_id` value at the end with the 4/5 letter song ID for the song you wish to render. You can reference [this list](https://zenius-i-vanisher.com/ddrmasterlist.txt) to easily figure out what the song ID is for a specific song.

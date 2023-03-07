@@ -28,7 +28,7 @@ class CsqAnimationRenderer:
         frame_start = int(event['frame_start'])
 
         for clip in event['clips']:
-            frames = self.frame_manager.get_raw_frames(clip['filename'] + ".sbs")
+            frames = self.frame_manager.get_raw_frames(clip['filename'], "sbs")
 
             if event['direction'] == PlaybackDirection.Freeze:
                 frames = [frames[frame_start]]

@@ -69,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--force-overwrite', help='Force overwrite', default=False, action="store_true")
 
     parser.add_argument('-c', '--cache-path', help='Frame cache path', default="frame_cache")
-    parser.add_argument('-r', '--video-path', help='Raw video path', default=None)
+    parser.add_argument('-r', '--video-path', help='Raw video path (can specify multiple times)', default=[], action='append', nargs='+')
     parser.add_argument('-t', '--tools-path', help='Tools path', default="tools")
 
     args = parser.parse_args()
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     if not os.path.exists(jpsxdec_path):
         logger.error("ERROR: Could not find jPSXdec! %s" % (jpsxdec_path))
     assert (os.path.exists(jpsxdec_path) == True)
-    frame_manager = FrameManager(args.cache_path, args.video_path, jpsxdec_path)
+    frame_manager = FrameManager(args.cache_path, [os.path.abspath(x[0]) for x in args.video_path], jpsxdec_path)
 
     renderer = CsqAnimationRenderer(anim_events, frame_manager, timekeeper)
     renderer.export(output_filename, song_mp3_filename, bg_image, raw_video_render_only)

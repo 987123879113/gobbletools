@@ -11,11 +11,11 @@ logger = logging.getLogger("ddranimtool." + __name__)
 
 
 class FrameManager:
-    def __init__(self, cache_folder, raw_video_folder="", jpsxdec_jar_path=None):
+    def __init__(self, cache_folder, raw_video_folders=[], jpsxdec_jar_path=None):
         self.video_cache = {}
         self.frame_cache = {}
         self.cache_folder = os.path.abspath(cache_folder)
-        self.raw_video_folder = os.path.abspath(raw_video_folder) if raw_video_folder else ""
+        self.raw_video_folders = raw_video_folders
         self.jpsxdec_jar_path = os.path.abspath(jpsxdec_jar_path) if jpsxdec_jar_path is not None else None
 
         self.temp_dir = os.path.abspath(tempfile._get_default_tempdir())
@@ -73,7 +73,7 @@ class FrameManager:
             frame_idx += 1
 
 
-    def get_raw_frames(self, filename):
+    def get_raw_frames(self, filename, ext):
         req_frames = []
 
         os.makedirs(self.cache_folder, exist_ok=True)
@@ -87,12 +87,22 @@ class FrameManager:
 
             self.video_cache[filename] = []
 
-            input_filename = os.path.join(self.raw_video_folder, filename)
-            logger.debug("Loading frames for %s" % input_filename)
+            input_filename = None
+            for raw_video_folder in self.raw_video_folders:
+                for xt in [ext.lower(), ext.upper()]:
+                    input_filename = os.path.join(raw_video_folder, filename + "." + xt)
 
-            if not os.path.exists(input_filename):
-                logger.error("Could not find %s" % input_filename)
+                    if os.path.exists(input_filename):
+                        break
+
+                if os.path.exists(input_filename):
+                    break
+
+            if input_filename is None or not os.path.exists(input_filename):
+                logger.error("Could not find video file for %s.%s" % (filename, ext))
             assert (os.path.exists(input_filename) == True)
+
+            logger.debug("Loading frames for %s" % input_filename)
 
             with open(input_filename, "rb") as infile:
                 data = bytearray(infile.read())
