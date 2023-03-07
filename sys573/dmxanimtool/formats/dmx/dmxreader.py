@@ -83,16 +83,18 @@ class DmxReader:
             offset = int.from_bytes(chunk[2:4], 'little')
             timestamp = offset / 300
             filename = chunk[4:20].strip(b'\0').decode('ascii')
-            param1 = int.from_bytes([chunk[20]], byteorder='little', signed=True)
-            param2 = chunk[21]
-            param3 = int.from_bytes([chunk[22]], byteorder='little', signed=True)
+            beats = int.from_bytes([chunk[20]], byteorder='little', signed=True)
+            start_frame = chunk[21]
+            step = int.from_bytes([chunk[22]], byteorder='little', signed=True)
 
             events.append({
                 'command': AnimationCommands(command),
                 'offset': offset,
                 'timestamp': timestamp,
                 'filename': filename,
-                'params': [param1, param2, param3],
+                'beats': beats,
+                'start_frame': start_frame,
+                'step': step,
             })
 
         return events

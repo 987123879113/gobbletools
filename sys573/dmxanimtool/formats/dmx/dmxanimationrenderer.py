@@ -223,8 +223,8 @@ class DmxAnimationRenderer:
 
                 if cur_event['command'] == AnimationCommands.PlayNormal:
                     # Loop clip at 1x speed
-                    movie_start_frame = cur_event['params'][1]
-                    movie_step_val = cur_event['params'][2]
+                    movie_start_frame = cur_event['start_frame']
+                    movie_step_val = cur_event['step']
                     movie_update_frame_step = 3
                     cur_command = AnimationCommands.PlayNormal
 
@@ -242,8 +242,8 @@ class DmxAnimationRenderer:
                 elif cur_event['command'] == AnimationCommands.PlayBeat:
                     # Loop clip, speed is based on the specified number of beats
                     # Can be reversed
-                    movie_step_beats = cur_event['params'][0]
-                    movie_start_frame = cur_event['params'][1]
+                    movie_step_beats = cur_event['beats']
+                    movie_start_frame = cur_event['start_frame']
                     movie_update_frame_step = 1
                     cur_command = AnimationCommands.PlayBeat
 
@@ -268,8 +268,8 @@ class DmxAnimationRenderer:
                 elif cur_event['command'] == AnimationCommands.PlayBeat2:
                     # Loop clip, speed is based on the specified number of beats
                     # CANNOT be reversed (only difference from PlayBeat?)
-                    movie_step_beats = cur_event['params'][0]
-                    movie_start_frame = cur_event['params'][1]
+                    movie_step_beats = cur_event['beats']
+                    movie_start_frame = cur_event['start_frame']
                     movie_update_frame_step = 1
                     movie_step_val = 1
                     cur_command = AnimationCommands.PlayBeat2
@@ -279,8 +279,8 @@ class DmxAnimationRenderer:
 
                 elif cur_event['command'] == AnimationCommands.PlayFast:
                     # Loop clip at 1.5x speed
-                    movie_start_frame = cur_event['params'][1]
-                    movie_step_val = cur_event['params'][2]
+                    movie_start_frame = cur_event['start_frame']
+                    movie_step_val = cur_event['step']
                     movie_update_frame_step = 2
                     cur_command = AnimationCommands.PlayFast
 
@@ -307,7 +307,7 @@ class DmxAnimationRenderer:
                 if cur_event['command'] in [AnimationCommands.PlayNormal, AnimationCommands.PlayFast, AnimationCommands.PlayBeat, AnimationCommands.PlayBeat2]:
                     last_absolute_beat_position = self.chart_reader.calculate_absolute_beat_from_timestamp(cur_offset)
 
-                    if event_idx < len(self.events) and self.events[event_idx]['params'] and self.events[event_idx]['params'][0] < 0:
+                    if event_idx < len(self.events) and self.events[event_idx]['beats'] < 0:
                         # Why would it want to know what direction the *next* video clip is supposed to go?
                         # Without this the swirling cloud clips in sanc won't render properly
                         # I suspect this is a bug in the game's animation player that became a feature
