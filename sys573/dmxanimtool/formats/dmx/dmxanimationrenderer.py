@@ -31,7 +31,7 @@ class DmxAnimationRenderer:
 
         last_frame_counter_update = 0
         absolute_beat_position = 0
-        normalized_counter = 0
+        absolute_beat_position_counter = 0
         cur_movie_idx_base_frame = 0
         cur_command = AnimationCommands.Uninitialized
         last_absolute_beat_position = 0
@@ -86,9 +86,9 @@ class DmxAnimationRenderer:
                     if movie_step_beats < 0:
                         absolute_beat_position_diff = -absolute_beat_position_diff
 
-                    normalized_counter += absolute_beat_position_diff
+                    absolute_beat_position_counter += absolute_beat_position_diff
 
-                    cur_counter = ((normalized_counter * 16) * (len(frames[cur_movie_idx]) - 1)) // (abs(movie_step_beats) * 0x600)
+                    cur_counter = ((absolute_beat_position_counter * 16) * (len(frames[cur_movie_idx]) - 1)) // (abs(movie_step_beats) * 0x600)
                     cur_frame_idx = (cur_counter >> 4) + ((cur_counter >> 3) & 1)
 
                     if movie_step_beats < 0:
@@ -240,10 +240,10 @@ class DmxAnimationRenderer:
                         # Why would it want to know what direction the *next* video clip is supposed to go?
                         # Without this the swirling cloud clips in sanc won't render properly
                         # I suspect this is a bug in the game's animation player that became a feature
-                        normalized_counter = len(frames[cur_movie_idx]) * len(frames) * 0x600
+                        absolute_beat_position_counter = len(frames[cur_movie_idx]) * len(frames) * 0x600
 
                     else:
-                        normalized_counter = 0
+                        absolute_beat_position_counter = 0
 
         blank_image = np.zeros(output_frames[-1].shape)
         for i in range(len(output_frames)):
