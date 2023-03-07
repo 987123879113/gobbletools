@@ -1,0 +1,4 @@
+hexdump==3.3
+moviepy==1.0.3
+numpy>=1.24.2
+Pillow>=9.4.0
