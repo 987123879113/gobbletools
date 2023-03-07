@@ -63,7 +63,7 @@ class DmxReader:
     def _parse_mbk(self, data):
         # mbk format:
         # struct mbk_entry {
-        # /* 0x00 */ uint16_t type;
+        # /* 0x00 */ uint16_t command;
         # /* 0x02 */ uint16_t time_offset;
         # /* 0x04 */ char filename[16];
         # /* 0x14 */ uint8_t beats;
