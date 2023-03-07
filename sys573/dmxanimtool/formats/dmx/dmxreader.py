@@ -7,11 +7,11 @@ logger = logging.getLogger("dmxanimtool." + __name__)
 
 class DmxReader:
     def __init__(self, chart_data, mbk_data):
-        self.timestamp_vals_by_chunk_id = self._calculate_timestamp_vals_from_chart(chart_data)
+        self.bpm_events_by_chunk_id = self._gather_bpm_events(chart_data)
         self.movie_events = self._parse_mbk(mbk_data)
 
     def calculate_absolute_beat_from_timestamp(self, requested_timestamp):
-        bpm_events = self.timestamp_vals_by_chunk_id[list(self.timestamp_vals_by_chunk_id.keys())[0]]
+        bpm_events = self.bpm_events_by_chunk_id[list(self.bpm_events_by_chunk_id.keys())[0]]
 
         # Pick the last BPM event that starts at or before the requested timestamp
         bpm_event = [x for x in bpm_events if requested_timestamp >= x[0][0]][-1]
@@ -29,11 +29,11 @@ class DmxReader:
     def get_anim_events(self):
         return self.movie_events
 
-    def _calculate_timestamp_vals_from_chart(self, data):
+    def _gather_bpm_events(self, data):
         chunk_count = int.from_bytes(data[4:8], 'little')
         chunk_offset = (chunk_count + 2) * 0x14
 
-        timestamp_vals_by_chunk_id = {}
+        bpm_events_by_chunk_id = {}
         for i in range(1, chunk_count+1):
             chunk_size = int.from_bytes(data[(i*0x14):(i*0x14)+4], 'little')
             chunk_id = int.from_bytes(data[(i*0x14)+8:(i*0x14)+12], 'little')
@@ -54,11 +54,11 @@ class DmxReader:
 
             bpm_events.insert(0, ((0, 0), bpm_events[0][0]))  # ?
 
-            timestamp_vals_by_chunk_id[chunk_id] = bpm_events
+            bpm_events_by_chunk_id[chunk_id] = bpm_events
 
             chunk_offset += chunk_size
 
-        return timestamp_vals_by_chunk_id
+        return bpm_events_by_chunk_id
 
     def _parse_mbk(self, data):
         # mbk format:
