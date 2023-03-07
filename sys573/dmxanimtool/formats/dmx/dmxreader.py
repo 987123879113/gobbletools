@@ -66,7 +66,7 @@ class DmxReader:
         # /* 0x00 */ uint16_t command;
         # /* 0x02 */ uint16_t time_offset;
         # /* 0x04 */ char filename[16];
-        # /* 0x14 */ uint8_t beats;
+        # /* 0x14 */ int8_t beats;
         # /* 0x15 */ uint8_t start_frame;
         # /* 0x16 */ int8_t step;
         # /* 0x17-0x1b */ uint8_t unused[5]; // ?
