@@ -213,9 +213,9 @@ class DmxAnimationRenderer:
             # Events will be processed in order based on the event's given timestamp value
             # Events can be chained together by setting the timestamp value to a smaller value than the previous event's timestamp (timestamp 0 is used officially)
             # The only exception is MovieStart must finish before any other events (besides MovieAppend) can be processed
-            # Note: There's a +0x4b offset to the timestamp when processing the events
+            # Note: There's a +0x4b offset (0.25 sec) to the timestamp when processing the events in-game
             can_accept_events = cur_command != AnimationCommands.MovieStart or (cur_command == AnimationCommands.MovieStart and movie_start_finished)
-            if can_accept_events and event_idx < len(self.events) and (cur_offset + 0x4b >= self.events[event_idx]['offset']):
+            if can_accept_events and event_idx < len(self.events) and (cur_offset >= self.events[event_idx]['offset']):
                 cur_event = self.events[event_idx]
                 event_idx += 1
 
