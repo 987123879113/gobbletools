@@ -43,7 +43,7 @@ for %s in (game_cd_contents/DAT/*.dat) do python3 py573a.py --input "%s"
 ```sh
 python3 video_frame_cacher.py -i game_cd_contents/MOV -i game_data_extracted
 ```
-Expect a full frame cache for each specific game to be somewhere around 2gb-3gb each.
+Expect a full frame cache for each specific game to be somewhere around 2gb each.
 
 I would recommend creating a new cache folder for every individual game you want to render so as to not run into issues where a video may have changed in some way between game releases. You can use the `-o frame_cache_folder_name` parameter to specify the output cache folder.
 ```sh
@@ -139,4 +139,47 @@ tubt  | CHUMBAWAMBA - TUBTHUMPING (KCP Happy Mix) (TUBTHUMPING (KCP Happy Mix))
 twin  | FinalOffset - Twin Bee -Generation X- (Twin Bee -Generation X-)
 upsi  | COO COO - UPSIDE DOWN (Hyper Euro Mix) (UPSIDE DOWN (Hyper Euro Mix))
 wond  | MM - WONDA (SPEED K MIX) (WONDA (SPEED K MIX))
+```
+
+## anim_renderer.py usage
+```
+usage: anim_renderer.py [-h] [-v] [-l LOG_OUTPUT] -m INPUT_DATA_PATH [-s INPUT_MP3_PATH] -i SONG_ID [-o OUTPUT] [-p [1-300]] [-f] [-c CACHE_PATH] [-r VIDEO_PATH [VIDEO_PATH ...]] [-t TOOLS_PATH]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         Print lots of debugging statements
+  -l LOG_OUTPUT, --log-output LOG_OUTPUT
+                        Save log to specified output file
+  -m INPUT_DATA_PATH, --input-data-path INPUT_DATA_PATH
+                        Input folder containing game data
+  -s INPUT_MP3_PATH, --input-mp3-path INPUT_MP3_PATH
+                        Input MP3 folder containing decrypted MP3s
+  -i SONG_ID, --song-id SONG_ID
+                        Song ID (4 or 5 letter name found in mdb folder)
+  -o OUTPUT, --output OUTPUT
+                        Output filename
+  -p [1-300], --fps [1-300]
+                        Output video fps
+  -f, --force-overwrite
+                        Force overwrite
+  -c CACHE_PATH, --cache-path CACHE_PATH
+                        Frame cache path
+  -r VIDEO_PATH [VIDEO_PATH ...], --video-path VIDEO_PATH [VIDEO_PATH ...]
+                        Raw video path (can specify multiple times)
+  -t TOOLS_PATH, --tools-path TOOLS_PATH
+                        Tools path
+```
+
+## video_frame_cacher.py usage
+```
+usage: video_frame_cacher.py [-h] -i INPUT [INPUT ...] [-o OUTPUT] [-t TOOLS_PATH]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT [INPUT ...], --input INPUT [INPUT ...]
+                        Input path containing raw video files (can specify multiple times)
+  -o OUTPUT, --output OUTPUT
+                        Output path to store cached video frames
+  -t TOOLS_PATH, --tools-path TOOLS_PATH
+                        Tools path
 ```

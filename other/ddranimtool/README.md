@@ -65,7 +65,7 @@ Replace the `song_id` value at the end with the 4/5 letter song ID for the song 
 
 ## anim_renderer.py usage
 ```
-usage: anim_renderer.py [-h] [-v] [-l LOG_OUTPUT] -m INPUT_MDB_PATH [-s INPUT_MP3_PATH] -i SONG_ID [-o OUTPUT] [-z] [-f] [-c CACHE_PATH] [-r VIDEO_PATH] [-t TOOLS_PATH]
+usage: anim_renderer.py [-h] [-v] [-l LOG_OUTPUT] -m INPUT_MDB_PATH [-s INPUT_MP3_PATH] -i SONG_ID [-o OUTPUT] [-z] [-f] [-c CACHE_PATH] [-r VIDEO_PATH [VIDEO_PATH ...]] [-t TOOLS_PATH]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -86,20 +86,20 @@ optional arguments:
                         Force overwrite
   -c CACHE_PATH, --cache-path CACHE_PATH
                         Frame cache path
-  -r VIDEO_PATH, --video-path VIDEO_PATH
-                        Raw video path
+  -r VIDEO_PATH [VIDEO_PATH ...], --video-path VIDEO_PATH [VIDEO_PATH ...]
+                        Raw video path (can specify multiple times)
   -t TOOLS_PATH, --tools-path TOOLS_PATH
                         Tools path
 ```
 
 ## video_frame_cacher.py usage
 ```
-usage: video_frame_cacher.py [-h] -i INPUT [-o OUTPUT] [-t TOOLS_PATH]
+usage: video_frame_cacher.py [-h] -i INPUT [INPUT ...] [-o OUTPUT] [-t TOOLS_PATH]
 
 optional arguments:
   -h, --help            show this help message and exit
-  -i INPUT, --input INPUT
-                        Input path containing raw video files
+  -i INPUT [INPUT ...], --input INPUT [INPUT ...]
+                        Input path containing raw video files (can specify multiple times)
   -o OUTPUT, --output OUTPUT
                         Output path to store cached video frames
   -t TOOLS_PATH, --tools-path TOOLS_PATH
