@@ -1,78 +1,7 @@
-# Memos:
-# A movie MUST start with a 3 command as its first command. Anything else breaks in-game.
-# The very first entry (with the timestamp position) does not need to be cmd 3, but cmd 3 must be in the first batch of commands (even if it's a 0 offset)
-#
-# Notes about command combinations at the start of a movie. All CLIP1 references are the very first entry.
-# For example:
-# 05DC Cmd 4 CLIP1 - Ignored
-# 0000 Cmd 3 CLIP2
-# 0000 Cmd 2 CLIP3
-# Will result in only clip 3 being looped with no gap (due to cmd 2?)
-#
-# 05DC Cmd 4 CLIP1 - Ignored
-# 0000 Cmd 3 CLIP2
-# 0000 Cmd 3 CLIP3
-# Will result in only clip 3 being looped but there will be a black gap between the end of the first play of CLIP2 and the looped CLIP2
-#
-# 05DC Cmd 4 CLIP1 - Ignored
-# 0000 Cmd 3 CLIP2
-# 0000 Cmd 4 CLIP3
-# Will result in CLIP2 being played once normally and then looped using the parameters from the following CMD 4
-#
-# 05DC Cmd 3 CLIP1
-# 0000 Cmd 4 CLIP2
-# 0000 Cmd 2 CLIP3
-# CLIP1 plays normally, CLIP2 and CLIP3 loop (using CLIP2's speed)
-#
-# 05DC Cmd 3 CLIP1
-# 0000 Cmd 4 CLIP2 - Ignored
-# 0000 Cmd 4 CLIP3
-# CLIP1 plays normally, CLIP3 loops using CLIP3's speed
-#
-# 05DC Cmd 4 CLIP1
-# 0000 Cmd 2 CLIP2
-# This breaks the movies entirely. I think a movie always needs to start with a 3 command to work.
-#
-# 05DC Cmd 4 CLIP1 - Ignored
-# 0000 Cmd 2 CLIP2 - Ignored
-# 0000 Cmd 3 CLIP3
-# CLIP3 plays normally
-#
-# 05DC Cmd 4 CLIP1 - Ignored
-# 0000 Cmd 4 CLIP2 - Ignored
-# 0000 Cmd 3 CLIP3
-# CLIP3 plays normally
-#
-# 05DC Cmd 3 CLIP1
-# 0000 Cmd 2 CLIP2 - Ignored?
-# 0000 Cmd 3 CLIP3
-# CLIP1 plays normally once, then it plays
-#
-#
-#
-#
-# 3 command followed by a 1 command:
-#   The 3 clip will play once until completion, then the 1 clip will loop for remaining time
-#
-# 4 command followed by a 1 command:
-#   Only the 1 command gets executed
-#
-# A non-2 command following any other command will override the previous command
-#
-# 4 followed by 2 command:
-# I've confirmed that a 4 command followed by a 2 command will loop *both* clips
-# You can see this in Mobo Moga around 55s in, where it loops between
-# N_VSSEA0 and S_LMMK10 twice.
-# Mobo Moga also uses two clips of different frame counts at that point.
-#
-# 4 followed by 1 command:
-# Plays only the 1 command at the same offset as the 4 command?
-
-
 import logging
 
 from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
-from moviepy.editor import concatenate_videoclips, AudioFileClip, CompositeVideoClip
+from moviepy.editor import concatenate_videoclips, AudioFileClip
 
 import numpy as np
 
@@ -334,4 +263,3 @@ class DmxAnimationRenderer:
         logger.info("Saving %s as %d fps" % (output_filename, fps))
         clip.write_videofile(output_filename, audio_codec="aac", preset="ultrafast",
                              fps=fps, bitrate="50000k")
-
