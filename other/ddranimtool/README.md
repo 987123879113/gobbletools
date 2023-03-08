@@ -80,8 +80,8 @@ optional arguments:
                         Song ID (4 or 5 letter name found in mdb folder)
   -o OUTPUT, --output OUTPUT
                         Output filename
-  -z, --render-background-image
-                        Include background image in rendered video
+  -z, --no-background-image
+                        Do not include background image in rendered video
   -f, --force-overwrite
                         Force overwrite
   -c CACHE_PATH, --cache-path CACHE_PATH

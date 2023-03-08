@@ -64,8 +64,8 @@ if __name__ == "__main__":
     parser.add_argument(
         '-i', '--song-id', help='Song ID (4 or 5 letter name found in mdb folder)', required=True)
     parser.add_argument('-o', '--output', help='Output filename', default=None)
-    parser.add_argument('-z', '--render-background-image',
-                        help='Include background image in rendered video', default=True, action="store_false")
+    parser.add_argument('-z', '--no-background-image',
+                        help='Do not include background image in rendered video', default=False, action="store_true")
     parser.add_argument('-f', '--force-overwrite', help='Force overwrite', default=False, action="store_true")
 
     parser.add_argument('-c', '--cache-path', help='Frame cache path', default="frame_cache")
@@ -97,7 +97,9 @@ if __name__ == "__main__":
 
     mdb_song_path = get_re_file_insensitive(re.escape(args.song_id) + "$", args.input_mdb_path)
     song_bg_filename = get_re_file_insensitive(
-        r'.*_bk\.cmt', mdb_song_path) if args.render_background_image else None
+        r'.*_bk\.cmt', mdb_song_path) if not args.no_background_image else None
+    song_bg_png_filename = get_re_file_insensitive(
+        r'.*_bk\.png', mdb_song_path) if not args.no_background_image else None
     song_mp3_filename = get_re_file_insensitive(
         r'M..'+re.escape(get_sys573_encoded_mp3_name(args.song_id))+'.*\..*MP3', args.input_mp3_path)
     song_chart_filename = get_re_file_insensitive(r'all\..*sq', mdb_song_path)
@@ -107,18 +109,25 @@ if __name__ == "__main__":
 
     assert (song_chart_filename is not None)
 
-    if song_bg_filename is not None:
+    bg_image = None
+    if song_bg_png_filename is not None:
+        bg_image = Image.open(song_bg_png_filename)
+        logger.debug("Loaded background image from PNG! %s" % (song_bg_png_filename))
+
+    elif song_bg_filename is not None:
         # Cropped to match what the actual AC game does.
         # I noticed the PS2 versions seem to use a different crop when looking at YouTube videos for reference.
         bg_image = tim2png.readTimImage(open(song_bg_filename, "rb"), disable_transparency=True)[0]
+        logger.debug("Loaded background image from CMT! %s" % (song_bg_filename))
+
+    if bg_image is not None and bg_image.size == (320, 240):
+        # If we're using a proper sized BG image then crop it to be AC accurate
+        # Note: CS uses a different crop
         top_crop = 25
         bottom_crop = 39
         left_crop = 8
         right_crop = 8
         bg_image = bg_image.crop((left_crop, top_crop, bg_image.width - right_crop, bg_image.height - bottom_crop))
-
-    else:
-        bg_image = Image.new('RGB', (304, 176))
 
     raw_video_render_only = False
 

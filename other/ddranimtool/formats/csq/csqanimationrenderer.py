@@ -179,7 +179,8 @@ class CsqAnimationRenderer:
             output_clips.append({
                 'timestamp_start': event['timestamp'],
                 'timestamp_end': self.events[idx+1]['timestamp'],
-                'clip': clip
+                'clip': clip,
+                '_frame_shape': output_frames[-1].shape  # Lazy way to track the frame shape if we need to make a new blank image for the BG later
             })
 
         return output_clips
@@ -212,9 +213,21 @@ class CsqAnimationRenderer:
 
             crossfade_time = 0.5
 
+            if background_image is None:
+                # Create blank background image
+                background_image = np.zeros(output_clips[-1]['_frame_shape'])
+
+            else:
+                # Resize background image if needed
+                if background_image.size != (output_clips[-1]['_frame_shape'][1], output_clips[-1]['_frame_shape'][0]):
+                    logger.warning("Expected the background image to be to %dx%d, found an image that was %dx%d. It's recommended you manually fix the background image resolution to match the video frame resolution and render again for best quality." % (output_clips[-1]['_frame_shape'][1], output_clips[-1]['_frame_shape'][0], background_image.width, background_image.height))
+                    background_image = background_image.resize((output_clips[-1]['_frame_shape'][1], output_clips[-1]['_frame_shape'][0]))
+
+                background_image = np.asarray(background_image)
+
             # Write the background image from the very beginning to the very end of the video
             clip = CompositeVideoClip([
-                self.get_clip([np.asarray(background_image)] * int((video_timestamp_end/1000)*60), 60),
+                self.get_clip([background_image] * int((video_timestamp_end/1000)*60), 60),
                 clip.set_start(earliest_timestamp / 1000).crossfadein(crossfade_time)
             ])
 
