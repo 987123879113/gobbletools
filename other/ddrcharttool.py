@@ -1462,9 +1462,9 @@ class SmWriter:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-i', '--input', help='Input folder', default=None, required=True)
+    parser.add_argument('-i', '--input', help='Input file', default=None, required=True)
     parser.add_argument('-if', '--input-format', help='Input format', required=True, choices=["ssq", "csq", "cms", "json", "sm"])
-    parser.add_argument('-o', '--output', help='Output folder', default=None, required=True)
+    parser.add_argument('-o', '--output', help='Output file', default=None, required=True)
     parser.add_argument('-of', '--output-format', help='Output format', required=True, choices=["ssq", "csq", "json", "sm"])
 
     args = parser.parse_args()
