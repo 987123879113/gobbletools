@@ -73,7 +73,7 @@ def decrypt_data(data, input_key):
 
 
 common_extensions = [
-    'bin', 'exe', 'dat', 'rom', 'o'
+    'bin', 'exe', 'dat', 'rom', 'o', 'lz'
 ]
 
 mambo_common_extensions = [
@@ -95,6 +95,7 @@ dmx_common_extensions = [
 ]
 
 common_extensions += mambo_common_extensions + ddr_common_extensions + gfdm_common_extensions + dmx_common_extensions
+common_extensions += [x + ".lz" for x in common_extensions]
 
 ddr_common_regions = [
     'span', 'ital', 'germ', 'fren', 'engl', 'japa', 'kore'
@@ -234,7 +235,9 @@ def parse_group_list_filenames_dmx(data, hash_list={}, skip_data=False):
         while filename_len < entry_size and data[i*entry_size+filename_len] != 0:
             filename_len += 1
 
-        filename = data[i*entry_size:i*entry_size+filename_len].decode('ascii').strip('\0')
+        filename = data[i*entry_size:i*entry_size+filename_len].decode('ascii').strip('\0').strip()
+        if not filename:
+            continue
 
         hash_list[get_filename_hash(filename)] = filename
 
@@ -263,7 +266,10 @@ def parse_group_list_filenames_dmx(data, hash_list={}, skip_data=False):
         while filename_len < entry_size and data[i*entry_size+filename_len] != 0:
             filename_len += 1
 
-        filename = data[i*entry_size:i*entry_size+filename_len].decode('ascii').strip('\0')
+        filename = data[i*entry_size:i*entry_size+filename_len].decode('ascii').strip('\0').strip()
+        if not filename:
+            continue
+
         hash_list[get_filename_hash(filename)] = filename
 
         for ext in common_extensions:
@@ -865,6 +871,17 @@ def dump_data(input_folder, output_folder, candidate_result, main_card_filename=
                 except:
                     pass
 
+            elif hash_list[fileinfo['filename_hash']] == "object_2d_data.bin":
+                try:
+                    hash_list = parse_group_list_filenames_dmx(get_file_data(input_folder, fileinfo, game_key), hash_list)
+                except:
+                    pass
+
+                try:
+                    hash_list = parse_group_list_filenames_dmx(get_file_data(input_folder, fileinfo, game_key), hash_list, True)
+                except:
+                    pass
+
     unknown_hash_list = {}
     for idx, fileinfo in enumerate(files):
         output_filename = "_output_%08x.bin" % (fileinfo['filename_hash'])
@@ -987,6 +1004,14 @@ def main():
         pass
 
     filenames = []
+
+    if os.path.exists("filenames.txt"):
+        with open("filenames.txt", "r") as infile:
+            for line in infile:
+                l = line.strip()
+                if not l:
+                    continue
+                filenames.append(l)
 
     for filename in filenames:
         hash_list[get_filename_hash(filename)] = filename
