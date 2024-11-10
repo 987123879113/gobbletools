@@ -26,6 +26,8 @@ def decrypt_data_internal(data, key):
 def main():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('--input', help='Input GAME.DAT', required=False, default="GAME.DAT")
+    parser.add_argument('--output', help='Output file', required=False, default="config.txt")
     parser.add_argument('--insert', help='Input configuration text into output file', default=False, action='store_true')
 
     args = parser.parse_args()
@@ -40,9 +42,14 @@ def main():
 
     else:
         # Extract from GAME.DAT
-        data = bytearray(open("GAME.DAT", "rb").read())[0x1fc4 * 0x800:0x1fc4 * 0x800 + 0x7f6]
+        data = bytearray(open(args.input, "rb").read())[0x1fc4 * 0x800:0x1fc4 * 0x800 + 0x7f6]
         config = decrypt_data_internal(data, "/s573/config.dat")
-        open("config.txt", "wb").write(config)
+        open(args.output, "wb").write(config)
+
+        try:
+            print(config.decode('cp932'))
+        except:
+            pass
 
 
 if __name__ == "__main__":
